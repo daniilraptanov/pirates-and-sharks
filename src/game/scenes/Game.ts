@@ -18,12 +18,54 @@ export class Game extends Scene
             this.cursors = this.input.keyboard.createCursorKeys();
         }
 
-        for (let x = 0; x < 128; x++) {
-            for (let y = 0; y < 128; y++) {
-                const square = this.add.rectangle(x * 25, y * 25, 25, 25, 0x00ff00);
-                square.setStrokeStyle(1, 0x000000);
-            }
-        }
+        const img = new Image();
+        img.src = "assets/map_128.png";
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+
+            canvas.width = img.width;
+            canvas.height = img.height;
+
+            if (context) {
+                context.drawImage(img, 0, 0);
+
+                const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                const data = imageData.data;
+
+                // for (let i = 0; i < data.length; i += 4) {
+                //     const red = data[i];
+                //     const green = data[i + 1];
+                //     const blue = data[i + 2];
+
+                //     const hexColor = "#" + ((1 << 24) + (red << 16) + (green << 8) + blue).toString(16).slice(1);
+
+                //     // console.log(hexColor);
+                // }
+                for (var y = 0; y < canvas.height; y++) {
+                    for (var x = 0; x < canvas.width; x++) {
+                        const index = (y * canvas.width + x) * 4;
+                        const red = data[index];
+                        const green = data[index + 1];
+                        const blue = data[index + 2];
+
+                        // TODO
+                        const hexColor = "#" + ((1 << 24) + (red << 16) + (green << 8) + blue).toString(16).slice(1);
+                        const hexColorNumber = parseInt(hexColor.replace(/^#/, ''), 16);
+                        const square = this.add.rectangle(x * 25, y * 25, 25, 25, hexColorNumber);
+                        square.setStrokeStyle(1, 0x000000);
+                    }
+                }
+            }  
+        };
+
+
+        // for (let x = 0; x < 128; x++) {
+        //     for (let y = 0; y < 128; y++) {
+        //         const square = this.add.rectangle(x * 25, y * 25, 25, 25, 0x00ff00);
+        //         square.setStrokeStyle(1, 0x000000);
+        //     }
+        // }
 
         EventBus.emit('current-scene-ready', this);
     }
