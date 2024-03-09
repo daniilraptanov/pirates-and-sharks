@@ -112,12 +112,11 @@ export class Game extends Scene
                 startY = pointer.y;
             }
         });
-
-
-
-        const zoomIncrement = 1;
-        const minZoom = 1;
-        const maxZoom = 10;
+        const zoomIncrement = 0.5;
+        const minZoom = 0.4;
+        const maxZoom = 3;
+        let targetZoom = this.cameras.main.zoom;
+        let isTweening = false;
 
         this.input.on('wheel', (
             _pointer: Phaser.Input.Pointer, 
@@ -126,10 +125,17 @@ export class Game extends Scene
             deltaY: number, 
             _deltaZ: number
         ) => {
-            if (deltaY > 0 && this.camera.zoom > minZoom) {
-                this.camera.zoom = Phaser.Math.Clamp(this.camera.zoom - zoomIncrement, minZoom, maxZoom);
-            } else if (deltaY < 0 && this.camera.zoom < maxZoom) {
-                this.camera.zoom = Phaser.Math.Clamp(this.camera.zoom + zoomIncrement, minZoom, maxZoom);
+            if (!isTweening) {
+                targetZoom = Phaser.Math.Clamp(this.cameras.main.zoom + (deltaY > 0 ? -zoomIncrement : zoomIncrement), minZoom, maxZoom);
+                isTweening = true;
+                this.tweens.add({
+                    targets: this.cameras.main,
+                    zoom: targetZoom,
+                    duration: 100, 
+                    onComplete: () => {
+                        isTweening = false; 
+                    }
+                });
             }
         });
     }
