@@ -7,7 +7,7 @@ export class MapSquare extends Phaser.GameObjects.Rectangle {
     squareType: MapSquareType;
     pirate: Pirate;
 
-    constructor(scene: Phaser.Scene, x: number, y: number, color: number) {
+    constructor(scene: Phaser.Scene, x: number, y: number, color: number, pirate: Pirate) {
         // TODO
         // if (!isValueInEnum(MapSquareType, color)) {
         //     return;
@@ -16,7 +16,9 @@ export class MapSquare extends Phaser.GameObjects.Rectangle {
         super(scene, x * MapSquare.SIZE, y * MapSquare.SIZE, MapSquare.SIZE, MapSquare.SIZE, color);
         scene.add.existing(this);
         this.setStrokeStyle(1, 0x000000);
-        this.squareType = color;
+
+        this.setSquareType(color);
+        this.setPirate(pirate);
 
         this.setInteractive();
         this.on('pointerdown', this.handleClick, this);
@@ -26,6 +28,10 @@ export class MapSquare extends Phaser.GameObjects.Rectangle {
         if (pointer.leftButtonDown() && this.pirate && this.isMovable) {
             this.pirate.move(this.x, this.y);
         }
+    }
+
+    setSquareType(squareType: number) {
+        this.squareType = squareType;
     }
 
     setPirate(pirate: Pirate) {

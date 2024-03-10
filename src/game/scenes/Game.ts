@@ -45,8 +45,7 @@ export class Game extends Scene
                         const blue = data[index + 2];
 
                         const hexColor = (1 << 24) + (red << 16) + (green << 8) + blue;
-                        const square = new MapSquare(this, x, y, hexColor);
-                        square.setPirate(pirate);
+                        const square = new MapSquare(this, x, y, hexColor, pirate);
                         if (square.isPlayerSpawnPoint) {
                             pirate.setPosition(square.x, square.y);
                         }
