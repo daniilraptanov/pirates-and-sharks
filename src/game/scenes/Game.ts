@@ -1,5 +1,7 @@
 import { EventBus } from '../EventBus';
 import { Scene } from 'phaser';
+import { MapSquare } from '../objects/MapSquare';
+import { Pirate } from '../objects/Pirate';
 
 export class Game extends Scene
 {
@@ -19,7 +21,7 @@ export class Game extends Scene
         }
 
         const img = new Image();
-        img.src = "assets/map_128.png";
+        img.src = "assets/map_128_3.png";
         img.onload = () => {
             const canvas = document.createElement('canvas');
             const context = canvas.getContext('2d');
@@ -33,6 +35,8 @@ export class Game extends Scene
                 const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
                 const data = imageData.data;
 
+                const pirate = new Pirate(this, 0, 0);
+
                 for (let y = 0; y < canvas.height; y++) {
                     for (let x = 0; x < canvas.width; x++) {
                         const index = (y * canvas.width + x) * 4;
@@ -40,14 +44,15 @@ export class Game extends Scene
                         const green = data[index + 1];
                         const blue = data[index + 2];
 
-                        // TODO
-                        const hexColor = "#" + ((1 << 24) + (red << 16) + (green << 8) + blue).toString(16).slice(1);
-                        const hexColorNumber = parseInt(hexColor.replace(/^#/, ''), 16);
-                        const square = this.add.rectangle(x * 25, y * 25, 25, 25, hexColorNumber);
-                        square.setStrokeStyle(1, 0x000000);
+                        const hexColor = (1 << 24) + (red << 16) + (green << 8) + blue;
+                        const square = new MapSquare(this, x, y, hexColor);
+                        square.setPirate(pirate);
+                        if (square.isPlayerSpawnPoint) {
+                            pirate.setPosition(square.x, square.y);
+                        }
                     }
                 }
-            }  
+            }
         };
 
         EventBus.emit('current-scene-ready', this);
