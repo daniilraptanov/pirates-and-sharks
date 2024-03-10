@@ -25,9 +25,17 @@ export class Pirate extends Phaser.GameObjects.Rectangle {
 
     private handleClick(pointer: Phaser.Input.Pointer) {
         if (pointer.leftButtonDown()) {
-            this.isSelected = !this.isSelected;
+            this.changeIsSelected();
         }
 
+        this.selectedHandler();
+    }
+
+    changeIsSelected() {
+        this.isSelected = !this.isSelected;
+    }
+
+    selectedHandler() {
         if (this.isSelected) {
             this.setScale(Pirate.SELECTED_SCALE);
             this.renderCircles();
@@ -41,6 +49,9 @@ export class Pirate extends Phaser.GameObjects.Rectangle {
         if (this.isSelected && this.isAllowedSquare(x, y)) {
             this.setPosition(x, y);
             this.renderCircles();
+
+            this.changeIsSelected();
+            this.selectedHandler();
         }
     }
 
