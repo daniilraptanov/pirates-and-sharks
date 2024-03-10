@@ -1,7 +1,6 @@
 import { EventBus } from '../EventBus';
 import { Scene } from 'phaser';
-import { MapSquare } from '../objects/MapSquare';
-import { Pirate } from '../objects/Pirate';
+import { Map } from '../objects/Map';
 
 export class Game extends Scene
 {
@@ -21,39 +20,7 @@ export class Game extends Scene
             this.cursors = this.input.keyboard.createCursorKeys();
         }
         
-        const img = new Image();
-        img.src = "assets/maps/map_128.png";
-        img.onload = () => {
-            const canvas = document.createElement('canvas');
-            const context = canvas.getContext('2d');
-
-            canvas.width = img.width;
-            canvas.height = img.height;
-
-            if (context) {
-                context.drawImage(img, 0, 0);
-
-                const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-                const data = imageData.data;
-
-                const pirate = new Pirate(this, 0, 0);
-
-                for (let y = 0; y < canvas.height; y++) {
-                    for (let x = 0; x < canvas.width; x++) {
-                        const index = (y * canvas.width + x) * 4;
-                        const red = data[index];
-                        const green = data[index + 1];
-                        const blue = data[index + 2];
-
-                        const hexColor = (1 << 24) + (red << 16) + (green << 8) + blue;
-                        const square = new MapSquare(this, x, y, hexColor, pirate);
-                        if (square.isPlayerSpawnPoint) {
-                            pirate.setPosition(square.x, square.y);
-                        }
-                    }
-                }
-            }
-        };
+        Map.createMap(this);
         
         let isDragging = false;
         let startX = 0;

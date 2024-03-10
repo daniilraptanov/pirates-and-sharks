@@ -1,3 +1,4 @@
+import { Map } from "./Map";
 import { MapSquare } from "./MapSquare";
 
 export class Pirate extends Phaser.GameObjects.Rectangle {
@@ -71,7 +72,13 @@ export class Pirate extends Phaser.GameObjects.Rectangle {
 
     private renderCircles() {
         this.clearCircles();
+
+        // TODO :: save allowed squares as MapSquare[]
         this.allowedSquares.forEach(square => {
+            const mapSquare = Map.getMapSquare(square.x, square.y);
+            if (!mapSquare.isMovable) {
+                return;
+            }
             const circle = this.scene.add.circle(square.x, square.y, 5, 0xffffff);
             this.possibleTurns.push(circle);
         });
