@@ -7,7 +7,7 @@ export class Game extends Scene
 {
     camera: Phaser.Cameras.Scene2D.Camera;
     cursors: Phaser.Types.Input.Keyboard.CursorKeys;
-
+    keys: any; // TODO
     constructor ()
     {
         super('Game');
@@ -15,11 +15,12 @@ export class Game extends Scene
 
     create ()
     {
+        
         this.camera = this.cameras.main;
         if (this.input && this.input.keyboard) {
             this.cursors = this.input.keyboard.createCursorKeys();
         }
-
+        
         const img = new Image();
         img.src = "assets/map_128.png";
         img.onload = () => {
@@ -53,29 +54,11 @@ export class Game extends Scene
                 }
             }
         };
-
-        EventBus.emit('current-scene-ready', this);
-    }
-
-    update() {
-        if (this.cursors.left.isDown) {
-            this.camera.scrollX -= 4;
-        } else if (this.cursors.right.isDown) {
-            this.camera.scrollX += 4;
-        }
-
-        if (this.cursors.up.isDown) {
-            this.camera.scrollY -= 4;
-        } else if (this.cursors.down.isDown) {
-            this.camera.scrollY += 4;
-        }
-
-
-
+        
         let isDragging = false;
         let startX = 0;
         let startY = 0;
-        const dampingFactor = 0.01;
+        const dampingFactor = 2;
 
         this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
             if (pointer.middleButtonDown()) {
@@ -99,10 +82,44 @@ export class Game extends Scene
                 startY = pointer.y;
             }
         });
+        document.addEventListener('keydown', (event) => {
+            const step = 30;
+            switch(event.key) {
+                case 'a':
+                    this.camera.scrollX -= step;
+                    break;
+                case 'd':
+                    this.camera.scrollX += step;
+                    break;
+                case 'w':
+                    this.camera.scrollY -= step;
+                    break;
+                case 's':
+                    this.camera.scrollY += step;
+                    break;
+            }
+        });
+        EventBus.emit('current-scene-ready', this);
+    }
+
+    update() {
+        let targetZoom = this.cameras.main.zoom;
+        const zoom = 10 * targetZoom;
+        if (this.cursors.left.isDown) {
+            this.camera.scrollX -= zoom;
+        } else if (this.cursors.right.isDown) {
+            this.camera.scrollX += zoom;
+        }
+
+        if (this.cursors.up.isDown) {
+            this.camera.scrollY -= zoom;
+        } else if (this.cursors.down.isDown) {
+            this.camera.scrollY += zoom;
+        }
+        
         const zoomIncrement = 0.5;
         const minZoom = 0.4;
         const maxZoom = 3;
-        let targetZoom = this.cameras.main.zoom;
         let isTweening = false;
 
         this.input.on('wheel', (
