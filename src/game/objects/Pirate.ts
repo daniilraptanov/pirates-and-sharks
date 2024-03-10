@@ -39,7 +39,6 @@ export class Pirate extends Phaser.GameObjects.Rectangle {
     move(x: number, y: number) {
         if (this.isSelected && this.isAllowedSquare(x, y)) {
             this.setPosition(x, y);
-            this.setAllowedSquares(x, y);
             this.renderCircles();
         }
     }
