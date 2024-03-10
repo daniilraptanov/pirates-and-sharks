@@ -1,7 +1,7 @@
 import { MapSquareType } from "../../enums/map-square-type";
 import { Pirate } from "./Pirate";
 
-export class MapSquare extends Phaser.GameObjects.Rectangle {
+export class MapSquare extends Phaser.GameObjects.Sprite {
     static SIZE = 25;
 
     squareType: MapSquareType;
@@ -13,15 +13,16 @@ export class MapSquare extends Phaser.GameObjects.Rectangle {
         //     return;
         // }
 
-        super(scene, x * MapSquare.SIZE, y * MapSquare.SIZE, MapSquare.SIZE, MapSquare.SIZE, color);
+        super(scene, x * MapSquare.SIZE, y * MapSquare.SIZE, "");
         scene.add.existing(this);
-        this.setStrokeStyle(1, 0x000000);
 
         this.setSquareType(color);
         this.setPirate(pirate);
 
         this.setInteractive();
         this.on('pointerdown', this.handleClick, this);
+        
+        this.setTexture(this.getTextureName());
     }
 
     private handleClick(pointer: Phaser.Input.Pointer) {
@@ -78,5 +79,11 @@ export class MapSquare extends Phaser.GameObjects.Rectangle {
 
     get isCaveSpawnPoint() {
         return this.squareType == MapSquareType.CAVE_SPAWN_POINT;
+    }
+
+    getTextureName() {
+        return (
+            this.isBeach ? "sand" : ""
+        )
     }
 }

@@ -22,7 +22,7 @@ export class Game extends Scene
         }
         
         const img = new Image();
-        img.src = "assets/map_128.png";
+        img.src = "assets/maps/map_128.png";
         img.onload = () => {
             const canvas = document.createElement('canvas');
             const context = canvas.getContext('2d');
