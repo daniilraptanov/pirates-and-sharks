@@ -15,7 +15,6 @@ export class Pirate extends Phaser.GameObjects.Rectangle {
     constructor(scene: Phaser.Scene, x: number, y: number) {
         super(scene, x, y, Pirate.SIZE, Pirate.SIZE, 0xffffff);
         scene.add.existing(this);
-        this.setStrokeStyle(1, 0x000000);
         this.setScale(Pirate.DEFAULT_SCALE);
         this.setDepth(1);
 
