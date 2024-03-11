@@ -2,7 +2,7 @@ import { MapSquareType } from "../../enums/map-square-type";
 import { Pirate } from "./Pirate";
 
 export class MapSquare extends Phaser.GameObjects.Sprite {
-    static SIZE = 25;
+    static SIZE = 50;
 
     squareType: MapSquareType;
     pirate: Pirate;
@@ -83,7 +83,11 @@ export class MapSquare extends Phaser.GameObjects.Sprite {
 
     getTextureName() {
         return (
-            this.isBeach ? "sand" : ""
+            this.isBeach || this.isBoatSpawnPoint || this.isPlayerSpawnPoint ? "sand" :
+            this.isForest ? "forest" :
+            this.isLake ? "lake" :
+            this.isOcean ? "ocean" :
+            this.isRock || this.isCaveSpawnPoint ? "rock" : "" 
         )
     }
 }

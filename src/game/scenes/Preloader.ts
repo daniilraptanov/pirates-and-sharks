@@ -27,8 +27,12 @@ export class Preloader extends Scene
     preload ()
     {
         //  Load the assets for the game - Replace with your own assets
-        this.load.setPath('public/assets/');
-        this.load.image("sand", "textures/sand_25.png")
+        this.load.setPath('assets/textures/');
+        this.load.image("forest", "forest_50x50.png");
+        this.load.image("lake", "lake_50x50.png");
+        this.load.image("ocean", "ocean_50x50.png");
+        this.load.image("rock", "rock_50x50.png");
+        this.load.image("sand", "sand_50x50.png");
     }
 
     create ()
