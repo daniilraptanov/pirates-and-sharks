@@ -25,7 +25,7 @@ export class Game extends Scene
         let isDragging = false;
         let startX = 0;
         let startY = 0;
-        const dampingFactor = 2;
+        const dampingFactor = 4;
 
         this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
             if (pointer.middleButtonDown()) {
@@ -50,7 +50,7 @@ export class Game extends Scene
             }
         });
         document.addEventListener('keydown', (event) => {
-            const step = 30;
+            const step = 40;
             switch(event.key) {
                 case 'a':
                     this.camera.scrollX -= step;
@@ -85,8 +85,8 @@ export class Game extends Scene
         }
         
         const zoomIncrement = 0.5;
-        const minZoom = 0.4;
-        const maxZoom = 3;
+        const minZoom = 0.2;
+        const maxZoom = 2;
         let isTweening = false;
 
         this.input.on('wheel', (
