@@ -6,9 +6,15 @@ export class Pirate extends Phaser.GameObjects.Rectangle {
     private static DEFAULT_SCALE = 1;
     private static SELECTED_SCALE = 1.3;
 
+    private static TURN_OFFSET = 2;
+    private static VISIBILITY_OFFSET = 3;
+
     private isSelected = false;
 
+    // TODO :: save squares as MapSquare[]
     private allowedSquares: { x: number, y: number }[] = [];
+    private visibleSquares: { x: number, y: number }[] = [];
+
     private possibleTurns: Phaser.GameObjects.Arc[] = [];
 
 
@@ -37,17 +43,18 @@ export class Pirate extends Phaser.GameObjects.Rectangle {
     selectedHandler() {
         if (this.isSelected) {
             this.setScale(Pirate.SELECTED_SCALE);
-            this.renderCircles();
+            this.renderPossibleTurnsCircles();
         } else {
             this.setScale(Pirate.DEFAULT_SCALE);
-            this.clearCircles();
+            this.clearPossibleTurnsCircles();
         }
     }
 
     move(x: number, y: number) {
         if (this.isSelected && this.isAllowedSquare(x, y)) {
             this.setPosition(x, y);
-            this.renderCircles();
+            this.renderPossibleTurnsCircles();
+            this.changeVisibilityArea();
 
             this.changeIsSelected();
             this.selectedHandler();
@@ -65,28 +72,42 @@ export class Pirate extends Phaser.GameObjects.Rectangle {
 
     private setAllowedSquares(x: number, y: number) {
         this.allowedSquares = [];
-
-        const offsets = [
-            { dx: -1, dy: 0 }, // left
-            { dx: 1, dy: 0 },  // right
-            { dx: 0, dy: -1 }, // forward
-            { dx: 0, dy: 1 }   // backward
-        ];
+        for (let k = 1; k <= Pirate.TURN_OFFSET; k++) {
+            const offsets = [
+                { dx: -k, dy: 0 }, // left
+                { dx: k, dy: 0 },  // right
+                { dx: 0, dy: -k }, // forward
+                { dx: 0, dy: k }   // backward
+            ];
+            for (const offset of offsets) {
+                const xCoord = x + offset.dx * MapSquare.SIZE;
+                const yCoord = y + offset.dy * MapSquare.SIZE;
+                this.allowedSquares.push({ x: xCoord, y: yCoord });
+            }
+        }
+    }
     
-        for (const offset of offsets) {
-            const xCoord = x + offset.dx * MapSquare.SIZE;
-            const yCoord = y + offset.dy * MapSquare.SIZE;
-            this.allowedSquares.push({ x: xCoord, y: yCoord });
+    private setVisibleSquares(x: number, y: number) {
+        this.visibleSquares = [{ x: this.x, y: this.y }];
+        for (let k = 1; k <= Pirate.VISIBILITY_OFFSET; k++) {
+            for (let dx = -k; dx <= k; dx++) {
+                for (let dy = -k; dy <= k; dy++) {
+                    if (dx !== 0 || dy !== 0) {
+                        const xCoord = x + dx * MapSquare.SIZE;
+                        const yCoord = y + dy * MapSquare.SIZE;
+                        this.visibleSquares.push({ x: xCoord, y: yCoord });
+                    }
+                }
+            }
         }
     }
 
-    private renderCircles() {
-        this.clearCircles();
+    private renderPossibleTurnsCircles() {
+        this.clearPossibleTurnsCircles();
 
-        // TODO :: save allowed squares as MapSquare[]
         this.allowedSquares.forEach(square => {
             const mapSquare = Map.getMapSquare(square.x, square.y);
-            if (!mapSquare.isMovable) {
+            if (!mapSquare?.isMovable) {
                 return;
             }
             const circle = this.scene.add.circle(square.x, square.y, 5, 0xffffff);
@@ -94,22 +115,22 @@ export class Pirate extends Phaser.GameObjects.Rectangle {
         });
     }
 
-    private clearCircles() {
+    private clearPossibleTurnsCircles() {
         this.possibleTurns.forEach(circle => circle.destroy());
         this.possibleTurns = [];
+    }
+
+    private changeVisibilityArea() {
+        this.visibleSquares.forEach(square => {
+            const mapSquare = Map.getMapSquare(square.x, square.y);
+            mapSquare.setSquareTint(true);
+        });
     }
 
     setPosition(x: number, y: number) {
         super.setPosition(x, y);
         this.setAllowedSquares(x, y);
+        this.setVisibleSquares(x, y);
         return this;
     }
-
-    // private isAdjacentSquare(x: number, y: number) {
-    //     const distance = Phaser.Math.Distance.BetweenPoints(
-    //         new Phaser.Geom.Point(this.x, this.y),
-    //         new Phaser.Geom.Point(x, y)
-    //     );
-    //     return distance === Pirate.MOVE_DISTANCE;
-    // }
 }
