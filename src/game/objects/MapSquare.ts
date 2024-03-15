@@ -8,11 +8,6 @@ export class MapSquare extends Phaser.GameObjects.Sprite {
     pirate: Pirate;
 
     constructor(scene: Phaser.Scene, x: number, y: number, color: number, pirate: Pirate) {
-        // TODO
-        // if (!isValueInEnum(MapSquareType, color)) {
-        //     return;
-        // }
-
         super(scene, x * MapSquare.SIZE, y * MapSquare.SIZE, "");
         scene.add.existing(this);
 
@@ -22,7 +17,8 @@ export class MapSquare extends Phaser.GameObjects.Sprite {
         this.setInteractive();
         this.on('pointerdown', this.handleClick, this);
         
-        this.setTexture(this.getTextureName());
+        this.setTexture();
+        this.setSquareTint();
     }
 
     private handleClick(pointer: Phaser.Input.Pointer) {
@@ -43,6 +39,18 @@ export class MapSquare extends Phaser.GameObjects.Sprite {
         return (
             this.isForest ||
             this.isBeach ||
+            this.isBoatSpawnPoint ||
+            this.isPlayerSpawnPoint ||
+            this.isCaveSpawnPoint
+        )
+    }
+
+    get isVisibility() {
+        return (
+            this.isOcean ||
+            this.isBeach ||
+            this.isRock ||
+            this.isLake ||
             this.isBoatSpawnPoint ||
             this.isPlayerSpawnPoint ||
             this.isCaveSpawnPoint
@@ -81,13 +89,21 @@ export class MapSquare extends Phaser.GameObjects.Sprite {
         return this.squareType == MapSquareType.CAVE_SPAWN_POINT;
     }
 
-    getTextureName() {
-        return (
+    setTexture(): this {
+        super.setTexture((
             this.isBeach || this.isBoatSpawnPoint || this.isPlayerSpawnPoint ? "sand" :
             this.isForest ? "forest" :
             this.isLake ? "lake" :
             this.isOcean ? "ocean" :
             this.isRock || this.isCaveSpawnPoint ? "rock" : "" 
-        )
+        ));
+        return this;
+    }
+
+    setSquareTint(visibility: boolean = false): this {
+        super.setTint((
+            this.isVisibility || visibility ? 0xffffff : 0x404040
+        ));
+        return this;
     }
 }
