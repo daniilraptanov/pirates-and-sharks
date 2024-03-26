@@ -33,6 +33,7 @@ export class Preloader extends Scene
         this.load.image("ocean", "ocean_50x50.png");
         this.load.image("rock", "rock_50x50.png");
         this.load.image("sand", "sand_50x50.png");
+        this.load.image("pirate", "pirate_50x50.png");
     }
 
     create ()

@@ -1,7 +1,7 @@
 import { Map } from "./Map";
 import { MapSquare } from "./MapSquare";
 
-export class Pirate extends Phaser.GameObjects.Rectangle {
+export class Pirate extends Phaser.GameObjects.Sprite {
     private static SIZE = 20;
     private static DEFAULT_SCALE = 1;
     private static SELECTED_SCALE = 1.3;
@@ -19,13 +19,15 @@ export class Pirate extends Phaser.GameObjects.Rectangle {
 
 
     constructor(scene: Phaser.Scene, x: number, y: number) {
-        super(scene, x, y, Pirate.SIZE, Pirate.SIZE, 0xffffff);
+        super(scene, x * Pirate.SIZE, y * Pirate.SIZE, "");
         scene.add.existing(this);
         this.setScale(Pirate.DEFAULT_SCALE);
         this.setDepth(1);
 
         this.setInteractive();
         this.on('pointerdown', this.handleClick, this);
+
+        this.setTexture("pirate");
     }
 
     private handleClick(pointer: Phaser.Input.Pointer) {
