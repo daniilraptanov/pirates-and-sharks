@@ -46,5 +46,32 @@ export class Map {
             }
         };
     }
+
+    static hasLineOfSight(x1: number, y1: number, x2: number, y2: number): boolean {
+        // Implementation of Bresenham's line algorithm
+        const dx = Math.abs(x2 - x1);
+        const dy = Math.abs(y2 - y1);
+        const sx = x1 < x2 ? 1 : -1;
+        const sy = y1 < y2 ? 1 : -1;
+        let err = dx - dy;
+    
+        while (x1 !== x2 || y1 !== y2) {
+            if (Map.getMapSquare(x1, y1)?.isRock) {
+                return false; // There's an obstacle, no line of sight
+            }
+    
+            const e2 = 2 * err;
+            if (e2 > -dy) {
+                err -= dy;
+                x1 += sx;
+            }
+            if (e2 < dx) {
+                err += dx;
+                y1 += sy;
+            }
+        }
+    
+        return true; // No obstacles found, line of sight is clear
+    }
 }
 

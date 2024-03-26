@@ -6,8 +6,8 @@ export class Pirate extends Phaser.GameObjects.Rectangle {
     private static DEFAULT_SCALE = 1;
     private static SELECTED_SCALE = 1.3;
 
-    private static TURN_OFFSET = 2;
-    private static VISIBILITY_OFFSET = 3;
+    private static TURN_OFFSET = 20;
+    private static VISIBILITY_OFFSET = 30;
 
     private isSelected = false;
 
@@ -90,11 +90,12 @@ export class Pirate extends Phaser.GameObjects.Rectangle {
     private setVisibleSquares(x: number, y: number) {
         this.visibleSquares = [{ x: this.x, y: this.y }];
         for (let k = 1; k <= Pirate.VISIBILITY_OFFSET; k++) {
-            for (let dx = -k; dx <= k; dx++) {
-                for (let dy = -k; dy <= k; dy++) {
-                    if (dx !== 0 || dy !== 0) {
-                        const xCoord = x + dx * MapSquare.SIZE;
-                        const yCoord = y + dy * MapSquare.SIZE;
+            for (let dx = k; dx >= -k; dx--) {
+                for (let dy = k; dy >= -k; dy--) {
+                    const xCoord = x + dx * MapSquare.SIZE;
+                    const yCoord = y + dy * MapSquare.SIZE;
+
+                    if (Map.hasLineOfSight(x, y, xCoord, yCoord)) {
                         this.visibleSquares.push({ x: xCoord, y: yCoord });
                     }
                 }
