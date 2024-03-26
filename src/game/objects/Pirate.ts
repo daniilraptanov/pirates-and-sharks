@@ -129,7 +129,7 @@ export class Pirate extends Phaser.GameObjects.Sprite {
     private changeVisibilityArea() {
         this.visibleSquares.forEach(square => {
             const mapSquare = Map.getMapSquare(square.x, square.y);
-            mapSquare.setSquareTint(true);
+            mapSquare?.setSquareTint(true);
         });
     }
 
