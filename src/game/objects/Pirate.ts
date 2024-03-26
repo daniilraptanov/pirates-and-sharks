@@ -82,7 +82,10 @@ export class Pirate extends Phaser.GameObjects.Rectangle {
             for (const offset of offsets) {
                 const xCoord = x + offset.dx * MapSquare.SIZE;
                 const yCoord = y + offset.dy * MapSquare.SIZE;
-                this.allowedSquares.push({ x: xCoord, y: yCoord });
+
+                if (Map.hasLineOfSight(x, y, xCoord, yCoord)) {
+                    this.allowedSquares.push({ x: xCoord, y: yCoord });
+                }
             }
         }
     }
