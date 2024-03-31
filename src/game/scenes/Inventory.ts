@@ -1,10 +1,14 @@
 import { Scene } from "phaser";
 import { EventBus } from "../EventBus";
 import inventoryServiceFactory from "../../services/InventoryServiceImpl";
+import { InventoryService } from "../../types/services/InventoryService";
 
 export class Inventory extends Scene {
+    inventoryService: InventoryService;
+
     constructor() {
         super({ key: 'Inventory' });
+        this.inventoryService = inventoryServiceFactory();
     }
 
     create() {
@@ -26,6 +30,11 @@ export class Inventory extends Scene {
         EventBus.emit('current-scene-ready', this);
 
         // Get data from API
-        const data = (async () => await inventoryServiceFactory().getUserInventory())();
+        (async () => {
+            const data = await this.inventoryService.getUserInventory();
+            data.forEach((element) => {
+                console.log(`${element.resource.name}: ${element.amount}`);
+            });
+        })();
     }
 }
