@@ -4,6 +4,10 @@ import { UserService } from "../types/services/UserService";
 import { LocalStorageServiceImpl } from "./LocalStorageServiceImpl";
 
 class UserServiceImpl implements UserService {
+    get isAuth() {
+        return !!(LocalStorageServiceImpl.pullFromStorage(LocalStorageKeys.AUTH_TOKEN));
+    }
+
     async registration(login: string, password: string): Promise<boolean> {
         return !!(await sendApiRequest("/register", "post", { login, password }));
     }
