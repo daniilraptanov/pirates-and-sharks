@@ -1,11 +1,14 @@
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { IRefPhaserGame, PhaserGame } from './game/PhaserGame';
 import { observer } from 'mobx-react';
+import Welcome from './components/Welcome';
+import userServiceFactory from './services/UserServiceImpl';
 
 const App = observer(() =>
 {
     //  References to the PhaserGame component (game and scene are exposed)
     const phaserRef = useRef<IRefPhaserGame | null>(null);
+    const [isAuth, setIsAuth] = useState(false);
 
     // const changeScene = () => {
 
@@ -24,9 +27,16 @@ const App = observer(() =>
     // Event emitted from the PhaserGame component
     const currentScene = (_scene: Phaser.Scene) => {};
 
+    useEffect(() => {
+        setIsAuth(userServiceFactory().isAuth);
+    }, []);
+
     return (
         <div id="app">
-            <PhaserGame ref={phaserRef} currentActiveScene={currentScene} />
+            {!isAuth 
+                ? <Welcome setIsAuth={setIsAuth} /> 
+                : <PhaserGame ref={phaserRef} currentActiveScene={currentScene} />
+            }
         </div>
     )
 });
