@@ -33,7 +33,10 @@ const App = observer(() =>
 
     return (
         <div id="app">
-            {!isAuth ? <Welcome /> : <PhaserGame ref={phaserRef} currentActiveScene={currentScene} />}
+            {!isAuth 
+                ? <Welcome setIsAuth={setIsAuth} /> 
+                : <PhaserGame ref={phaserRef} currentActiveScene={currentScene} />
+            }
         </div>
     )
 });
