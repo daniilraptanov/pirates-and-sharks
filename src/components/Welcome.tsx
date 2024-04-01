@@ -29,7 +29,7 @@ const Welcome: FC<WelcomeProps> = (props) => {
         if (!result) {
             return setError("Ooops! Error! Check your data..");
         }
-        props.setIsAuth(true);  
+        props.setIsAuth(userServiceFactory().isAuth);  
     }
 
     return (
