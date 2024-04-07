@@ -13,6 +13,7 @@ class UserServiceImpl implements UserService {
     }
 
     async login(login: string, password: string): Promise<boolean> {
+        LocalStorageServiceImpl.removeByKey(LocalStorageKeys.AUTH_TOKEN);
         const token = (await sendApiRequest("/login", "post", { login, password }))["token"];
         if (!token) {
             return false;
