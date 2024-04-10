@@ -34,7 +34,9 @@ export class Preloader extends Scene
         this.load.image("rock", "textures/rock_50x50.png");
         this.load.image("sand", "textures/sand_50x50.png");
         this.load.image("pirate", "textures/pirate_50x50.png");
-        this.load.image("InvYellow", "InventoryBars/YInventory_1000х420.png")
+        this.load.image("Axe", "InventoryBar/Axe.png")
+        this.load.image("Pickaxe", "InventoryBar/Pickaxe.png")
+        this.load.image("Shovel", "InventoryBar/Shovel.png")
     }
 
     create ()
