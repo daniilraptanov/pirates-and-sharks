@@ -68,7 +68,22 @@ export class Inventory extends Scene {
         const borderRect = this.add.graphics();
         borderRect.lineStyle(borderThickness, borderColor);
         borderRect.strokeRect(inventoryX, inventoryY, inventoryWidth, inventoryHeight);
-    
+        
+        // Добавляем нумерацию ячеек
+        let cellNumber = 1;
+        let Num = 1;
+        for (let row = 0; row < 3; row++) {
+            for (let col = 0; col < 5; col++) {
+                const cellX = inventoryX + col * cellWidth + 5; // Отступ слева
+                const cellY = inventoryY + row * cellHeight + 5; // Отступ сверху
+                if ([1, 6, 7, 8, 9, 14].includes(cellNumber)) {
+                    this.add.text(cellX, cellY, Num.toString(), { color: '#000000', fontFamily:'sans-serif', fontSize: '20px' });
+                    Num++;
+                }
+                cellNumber++;
+                
+            }
+        }
         EventBus.emit('current-scene-ready', this);
 
         // Get data from API
