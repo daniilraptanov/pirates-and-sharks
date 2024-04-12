@@ -1,3 +1,6 @@
+import { LocalStorageKeys } from "../enums/local-storage-keys";
+import { LocalStorageServiceImpl } from "../services/LocalStorageServiceImpl";
+
 export async function sendApiRequest(
   url: string,
   method: "get" | "post" | "patch" | "delete" = "get",
@@ -8,6 +11,8 @@ export async function sendApiRequest(
     body = JSON.stringify(body);
     headers["Content-Type"] = "application/json";
   }
+  
+  headers["Authorization"] = `Bearer ${LocalStorageServiceImpl.pullFromStorage(LocalStorageKeys.AUTH_TOKEN)}`;
 
   try {
     // TODO :: replace api url to config
@@ -20,8 +25,9 @@ export async function sendApiRequest(
     if (response.status !== 200) {
         throw new Error(response.status.toString());
     }
-    return await response.json();
+    return (await response.json())["data"];
   } catch (err) {
-    return {data: null, message: "Response error...", code: parseInt(err as string) }
+    console.log(`Response error...`, err);
+    return null;
   }
 }

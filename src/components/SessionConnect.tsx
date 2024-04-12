@@ -5,7 +5,7 @@ interface SessionConnectProps {}
 
 const sessionService = sessionServiceFactory();
 
-const SessionConnect: FC<SessionConnectProps> = (props) => {
+const SessionConnect: FC<SessionConnectProps> = (_props) => {
     const [sessionToken, setSessionToken] = useState(sessionService.sessionToken);
 
     const handleSessionToken = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -13,26 +13,24 @@ const SessionConnect: FC<SessionConnectProps> = (props) => {
     };
 
     const connectToSession = async () => {
-        const result = sessionService.connectToSession(sessionToken);
-        // if (!result) {
-        //     return setError("Ooops! Error! Check your data..");
-        // }
-        // props.setIsAuth(userServiceFactory().isAuth);  
+        await sessionService.connectToSession(sessionToken);
+    }
+
+    const createSession = async () => {
+        const token = await sessionService.createSession();
+        setSessionToken(token);
     }
 
     return (
         <div>
-            <h1>Connect to Session!</h1>
-            {/* <div>
-                <h2>{isLogin ? "Login" : "Registration"}</h2>
-                <input type="text" placeholder="Username" value={username} onChange={handleUsernameChange} />
-                <input type="password" placeholder="Password" value={password} onChange={handlePasswordChange} />
-                <button onClick={handleAuth}>{isLogin ? "Login" : "Register"}</button>
-                <button onClick={() => setIsLogin(!isLogin)}>{isLogin ? "Switch to Registration" : "Switch to Login"}</button>
-                <p>{error}</p>
-            </div> */}
+            <h1>Firstly connect to Session!</h1>
+            <div>
+                <input type="text" placeholder="Session token" value={sessionToken} onChange={handleSessionToken} />
+                <button disabled={!!!sessionToken} onClick={connectToSession}>Connect</button>
+                <button onClick={createSession}>Create new session</button>
+            </div>
         </div>
     );
 };
 
-export default Welcome;
+export default SessionConnect;

@@ -9,10 +9,11 @@ class SessionServiceImpl implements SessionService {
     }
 
     async createSession(): Promise<string> {
-        return sendApiRequest("/sessions", "post");
+        // TODO :: User should be select a Map on start page
+        return sendApiRequest("/sessions", "post", { mapId: "9cea903a-2896-42df-94f0-9a36a509780e" });
     }
 
-    async connectToSession(token: string): Promise<void> {
+    async connectToSession(token: string): Promise<boolean> {
         LocalStorageServiceImpl.pushToStorage(LocalStorageKeys.SESSION_TOKEN, token);
         return sendApiRequest("/sessions", "patch", { token });
     }

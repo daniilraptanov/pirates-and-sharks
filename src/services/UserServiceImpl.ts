@@ -9,12 +9,12 @@ class UserServiceImpl implements UserService {
     }
 
     async registration(login: string, password: string): Promise<boolean> {
-        return !!(await sendApiRequest("/register", "post", { login, password }));
+        return !!(await sendApiRequest("/auth/register", "post", { login, password }));
     }
 
     async login(login: string, password: string): Promise<boolean> {
         LocalStorageServiceImpl.removeByKey(LocalStorageKeys.AUTH_TOKEN);
-        const token = (await sendApiRequest("/login", "post", { login, password }))["token"];
+        const token = (await sendApiRequest("/auth/login", "post", { login, password }));
         if (!token) {
             return false;
         }

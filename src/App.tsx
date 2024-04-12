@@ -3,6 +3,7 @@ import { IRefPhaserGame, PhaserGame } from './game/PhaserGame';
 import { observer } from 'mobx-react';
 import Welcome from './components/Welcome';
 import userServiceFactory from './services/UserServiceImpl';
+import SessionConnect from './components/SessionConnect';
 
 const App = observer(() =>
 {
@@ -34,9 +35,13 @@ const App = observer(() =>
     return (
         <div id="app">
             {!isAuth 
-                ? <Welcome setIsAuth={setIsAuth} /> 
-                : <PhaserGame ref={phaserRef} currentActiveScene={currentScene} />
+                ? <Welcome setIsAuth={setIsAuth} />
+                : <SessionConnect />
             }
+            {/* {
+                ? <PhaserGame ref={phaserRef} currentActiveScene={currentScene} />
+                : <></>
+            } */}
         </div>
     )
 });

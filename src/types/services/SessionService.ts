@@ -1,5 +1,5 @@
 export interface SessionService {
     sessionToken: string;
     createSession(): Promise<string>;
-    connectToSession(token: string): Promise<void>;
+    connectToSession(token: string): Promise<boolean>;
 }
