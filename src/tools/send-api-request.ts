@@ -1,5 +1,7 @@
+import { StatusCodes } from "http-status-codes";
 import { LocalStorageKeys } from "../enums/local-storage-keys";
 import { LocalStorageServiceImpl } from "../services/LocalStorageServiceImpl";
+import userServiceFactory from "../services/UserServiceImpl";
 
 // TODO :: replace api url to config
 export const SERVER_URL = "http://localhost:5000";
@@ -24,8 +26,12 @@ export async function sendApiRequest(
       body: body,
       headers: headers,
     });
-    // TODO
-    if (response.status !== 200) {
+    
+    if (response.status === StatusCodes.UNAUTHORIZED) {
+        return userServiceFactory().logout();
+    }
+
+    if (response.status !== StatusCodes.OK) {
         throw new Error(response.status.toString());
     }
     return (await response.json())["data"];

@@ -21,6 +21,11 @@ class UserServiceImpl implements UserService {
         LocalStorageServiceImpl.pushToStorage(LocalStorageKeys.AUTH_TOKEN, token);
         return true;
     }
+
+    logout(): void {
+        LocalStorageServiceImpl.removeByKey(LocalStorageKeys.AUTH_TOKEN);
+        window.location.reload();        
+    }
 }
 
 export default function userServiceFactory(): UserService {
