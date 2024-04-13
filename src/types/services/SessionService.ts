@@ -1,5 +1,5 @@
 export interface SessionService {
     sessionToken: string;
-    createSession(): Promise<string>;
+    createSession(mapId: string): Promise<string>;
     connectToSession(token: string): Promise<boolean>;
 }
