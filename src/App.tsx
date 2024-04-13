@@ -10,6 +10,7 @@ const App = observer(() =>
     //  References to the PhaserGame component (game and scene are exposed)
     const phaserRef = useRef<IRefPhaserGame | null>(null);
     const [isAuth, setIsAuth] = useState(false);
+    const [isConnectedToSession, setIsConnectedToSession] = useState(false);
 
     // const changeScene = () => {
 
@@ -36,12 +37,11 @@ const App = observer(() =>
         <div id="app">
             {!isAuth 
                 ? <Welcome setIsAuth={setIsAuth} />
-                : <SessionConnect />
+                : 
+                    !isConnectedToSession 
+                        ? <SessionConnect setIsConnectedToSession={setIsConnectedToSession} />
+                        : <PhaserGame ref={phaserRef} currentActiveScene={currentScene} />
             }
-            {/* {
-                ? <PhaserGame ref={phaserRef} currentActiveScene={currentScene} />
-                : <></>
-            } */}
         </div>
     )
 });

@@ -1,11 +1,13 @@
 import  { FC, useState } from "react";
 import sessionServiceFactory from "../services/SessionServiceImpl";
 
-interface SessionConnectProps {}
+interface SessionConnectProps {
+    setIsConnectedToSession: (value: boolean) => void;
+}
 
 const sessionService = sessionServiceFactory();
 
-const SessionConnect: FC<SessionConnectProps> = (_props) => {
+const SessionConnect: FC<SessionConnectProps> = (props) => {
     const [sessionToken, setSessionToken] = useState(sessionService.sessionToken);
 
     const handleSessionToken = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -13,7 +15,7 @@ const SessionConnect: FC<SessionConnectProps> = (_props) => {
     };
 
     const connectToSession = async () => {
-        await sessionService.connectToSession(sessionToken);
+        props.setIsConnectedToSession(await sessionService.connectToSession(sessionToken));
     }
 
     const createSession = async () => {
