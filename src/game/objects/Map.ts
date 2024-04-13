@@ -12,6 +12,10 @@ export class Map {
 
     static createMap(scene: Phaser.Scene) {
         const img = new Image();
+        // TODO :: use this: 
+        //      img.src = SERVER_URL + Map.sessionService.sessionMap.source;
+        //          But this triggered error "The canvas has been tainted by cross-origin data".
+        //          Server should be configured correctly!
         img.src = `assets/maps/map_${Map.mapWidth}.png`;
         img.onload = () => {
             const canvas = document.createElement('canvas');

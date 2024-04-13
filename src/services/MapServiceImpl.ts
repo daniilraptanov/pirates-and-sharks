@@ -15,6 +15,10 @@ class MapServiceImpl implements MapService {
         this.maps = (await sendApiRequest("/maps", "get")) || [];
         return this.maps;
     }
+
+    findMapById(id: string): MapDTO | null {
+        return this.maps.find(map => map.id === id) || null;
+    }
 }
 
 export default function mapServiceFactory(): MapService {

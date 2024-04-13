@@ -3,6 +3,7 @@ import sessionServiceFactory from "../services/SessionServiceImpl";
 import mapServiceFactory from "../services/MapServiceImpl";
 import { observer } from "mobx-react";
 import { SERVER_URL } from "../tools/send-api-request";
+import { MapDTO } from "../types/dto/MapDTO";
 
 interface SessionConnectProps {
     setIsConnectedToSession: (value: boolean) => void;
@@ -13,25 +14,27 @@ const mapService = mapServiceFactory();
 
 const SessionConnect: FC<SessionConnectProps> = observer((props) => {
     const [sessionToken, setSessionToken] = useState(sessionService.sessionToken);
-    const [selectedMapId, setSelectedMapId] = useState<string | null>(null);
+    const [selectedMap, setSelectedMap] = useState<MapDTO | null>(null);
 
     const handleSessionToken = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSessionToken(e.target.value);
     };
 
-    const handleSelectedMapId = (id: string) => {
-        setSelectedMapId(id);
+    const handleSelectedMap = (map: MapDTO) => {
+        setSelectedMap(map);
     }
 
     const connectToSession = async () => {
-        props.setIsConnectedToSession(await sessionService.connectToSession(sessionToken));
+        const session = await sessionService.connectToSession(sessionToken);
+        props.setIsConnectedToSession(!!session);
+        sessionService.setSessionMap(mapService.findMapById(session.mapId) as MapDTO);
     }
 
     const createSession = async () => {
-        if (!selectedMapId) {
+        if (!selectedMap) {
             return;
         }
-        const token = await sessionService.createSession(selectedMapId);
+        const token = await sessionService.createSession(selectedMap.id);
         setSessionToken(token);
     }
 
@@ -44,8 +47,8 @@ const SessionConnect: FC<SessionConnectProps> = observer((props) => {
             {
                 !sessionToken ? mapService.maps.map((map) => (
                     <img
-                        onClick={() => handleSelectedMapId(map.id)}
-                        className={selectedMapId === map.id ? "selectedMap": ""} 
+                        onClick={() => handleSelectedMap(map)}
+                        className={selectedMap?.id === map.id ? "selectedMap": ""} 
                         key={map.id} 
                         src={SERVER_URL + map.source} 
                         alt="" 
