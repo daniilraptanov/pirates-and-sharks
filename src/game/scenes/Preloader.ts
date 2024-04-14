@@ -37,6 +37,9 @@ export class Preloader extends Scene
         this.load.image("Axe", "InventoryBar/Axe.png")
         this.load.image("Pickaxe", "InventoryBar/Pickaxe.png")
         this.load.image("Shovel", "InventoryBar/Shovel.png")
+        this.load.image("Rope", "InventoryBar/Rope.png")
+        this.load.image("Spear", "InventoryBar/Spear.png")
+        this.load.image("Rom", "InventoryBar/Rom.png")
     }
 
     create ()
