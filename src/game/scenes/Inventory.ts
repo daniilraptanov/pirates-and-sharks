@@ -169,7 +169,7 @@ export class Inventory extends Scene {
             Axe.on('pointerover', () => {
                 if (Pickaxe_Choise === false && Axe_Choise === false && Shovel_Choise === false && Rope_Choise === false && Spear_Choise === false && Rom_Choise === false) {
                 Axe.setScale(0.5); // Установка масштаба в 0.5 относительно оригинального размера
-                Axe.x = cellWidth-130;
+                Axe.x = inventoryX+50;
                 Axe.y = inventoryY+90;
                 }
             });
@@ -195,8 +195,8 @@ export class Inventory extends Scene {
             Pickaxe.on('pointerover', () => {
                 if (Pickaxe_Choise === false && Axe_Choise === false && Shovel_Choise === false && Rope_Choise === false && Spear_Choise === false && Rom_Choise === false) {
                     Pickaxe.setScale(0.5); 
-                    Pickaxe.x = cellWidth+70;
-                    Pickaxe.y = inventoryY+90;
+                    Pickaxe.x = inventoryX+270;
+                    Pickaxe.y = inventoryY+85;
                 }
             });
             Pickaxe.on('pointerout', () => {
@@ -221,8 +221,8 @@ export class Inventory extends Scene {
             Shovel.on('pointerover', () => {
                 if (Pickaxe_Choise === false && Axe_Choise === false && Shovel_Choise === false && Rope_Choise === false && Spear_Choise === false && Rom_Choise === false) {
                     Shovel.setScale(0.5);
-                    Shovel.x = cellWidth+270;
-                    Shovel.y = inventoryY+90;
+                    Shovel.x = inventoryX+460;
+                    Shovel.y = inventoryY+85;
                 }
             });
             Shovel.on('pointerout', () => {
@@ -247,7 +247,7 @@ export class Inventory extends Scene {
             Spear.on('pointerover', () => {
                 if (Pickaxe_Choise === false && Axe_Choise === false && Shovel_Choise === false && Rope_Choise === false && Spear_Choise === false && Rom_Choise === false) {
                     Spear.setScale(0.5); 
-                    Spear.x = cellWidth+20;
+                    Spear.x = inventoryX+220;
                     Spear.y = inventoryY+20;
                 }
             });
@@ -273,7 +273,7 @@ export class Inventory extends Scene {
             Rope.on('pointerover', () => {
                 if (Pickaxe_Choise === false && Axe_Choise === false && Shovel_Choise === false && Rope_Choise === false && Spear_Choise === false && Rom_Choise === false) {
                     Rope.setScale(0.5);
-                    Rope.x = cellWidth+470;
+                    Rope.x = inventoryX+660;
                     Rope.y = inventoryY+75;
                 }
             });
@@ -299,7 +299,7 @@ export class Inventory extends Scene {
             Rom.on('pointerover', () => {
                 if (Pickaxe_Choise === false && Axe_Choise === false && Shovel_Choise === false && Rope_Choise === false && Spear_Choise === false && Rom_Choise === false) {
                     Rom.setScale(0.5); 
-                    Rom.x = cellWidth+470;
+                    Rom.x = inventoryX+660;
                     Rom.y = inventoryY+135;
                 }
             });
@@ -336,7 +336,7 @@ export class Inventory extends Scene {
                 else {
                     Spear_Choise = true;
                     Spear.setScale(0.5); 
-                    Spear.x = cellWidth+20;
+                    Spear.x = inventoryX+220;
                     Spear.y = inventoryY+20;
                 }
             }
@@ -352,7 +352,7 @@ export class Inventory extends Scene {
                 else {
                     Axe_Choise = true;
                     Axe.setScale(0.5);
-                    Axe.x = cellWidth-130;
+                    Axe.x = inventoryX+50;
                     Axe.y = inventoryY+90;
                 }
             }
@@ -368,8 +368,8 @@ export class Inventory extends Scene {
                 else {
                     Pickaxe_Choise = true;
                     Pickaxe.setScale(0.5);
-                    Pickaxe.x = cellWidth+70;
-                    Pickaxe.y = inventoryY+90;
+                    Pickaxe.x = inventoryX+270;
+                    Pickaxe.y = inventoryY+85;
                 }
             }
             if (event.key === '4' && Pickaxe_Choise === false && Axe_Choise === false && Rope_Choise === false && Spear_Choise === false && Rom_Choise === false) {
@@ -384,8 +384,8 @@ export class Inventory extends Scene {
                 else {
                     Shovel_Choise = true;
                     Shovel.setScale(0.5);
-                    Shovel.x = cellWidth+270;
-                    Shovel.y = inventoryY+90;
+                    Shovel.x = inventoryX+460;
+                    Shovel.y = inventoryY+85;
                 }
             }
             if (event.key === '5' && Pickaxe_Choise === false && Axe_Choise === false && Shovel_Choise === false && Spear_Choise === false && Rom_Choise === false) {
@@ -400,7 +400,7 @@ export class Inventory extends Scene {
                 else {
                     Rope_Choise = true;
                     Rope.setScale(0.5);
-                    Rope.x = cellWidth+470;
+                    Rope.x = inventoryX+660;
                     Rope.y = inventoryY+75;
                 }
             }
@@ -416,7 +416,7 @@ export class Inventory extends Scene {
                 else {
                     Rom_Choise = true;
                     Rom.setScale(0.5); 
-                    Rom.x = cellWidth+470;
+                    Rom.x = inventoryX+660;
                     Rom.y = inventoryY+135;
                 }
             }
