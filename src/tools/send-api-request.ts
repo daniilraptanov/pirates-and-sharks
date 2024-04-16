@@ -1,3 +1,12 @@
+import { StatusCodes } from "http-status-codes";
+import { LocalStorageKeys } from "../enums/local-storage-keys";
+import { LocalStorageServiceImpl } from "../services/LocalStorageServiceImpl";
+import userServiceFactory from "../services/UserServiceImpl";
+
+// TODO :: replace api url to config
+export const SERVER_URL = "http://localhost:5000";
+export const API_ROUTE = "/api";
+
 export async function sendApiRequest(
   url: string,
   method: "get" | "post" | "patch" | "delete" = "get",
@@ -8,20 +17,26 @@ export async function sendApiRequest(
     body = JSON.stringify(body);
     headers["Content-Type"] = "application/json";
   }
+  
+  headers["Authorization"] = `Bearer ${LocalStorageServiceImpl.pullFromStorage(LocalStorageKeys.AUTH_TOKEN)}`;
 
   try {
-    // TODO :: replace api url to config
-    const response = await fetch("http://localhost:5000/api" + url, {
+    const response = await fetch(SERVER_URL + API_ROUTE + url, {
       method: method,
       body: body,
       headers: headers,
     });
-    // TODO
-    if (response.status !== 200) {
+    
+    if (response.status === StatusCodes.UNAUTHORIZED) {
+        return userServiceFactory().logout();
+    }
+
+    if (response.status !== StatusCodes.OK) {
         throw new Error(response.status.toString());
     }
-    return await response.json();
+    return (await response.json())["data"];
   } catch (err) {
-    return {data: null, message: "Response error...", code: parseInt(err as string) }
+    console.log(`Response error...`, err);
+    return null;
   }
 }

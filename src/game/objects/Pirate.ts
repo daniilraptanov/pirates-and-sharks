@@ -6,8 +6,8 @@ export class Pirate extends Phaser.GameObjects.Sprite {
     private static DEFAULT_SCALE = 1;
     private static SELECTED_SCALE = 1.3;
 
-    private static TURN_OFFSET = 20;
-    private static VISIBILITY_OFFSET = 30;
+    private static TURN_OFFSET = 2;
+    private static VISIBILITY_OFFSET = 3;
 
     private isSelected = false;
 
