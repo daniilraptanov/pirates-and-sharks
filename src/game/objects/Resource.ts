@@ -1,7 +1,8 @@
 import { ResourceType } from "../../enums/resource-type";
 
 export class Resource {
-    scene: Phaser.Scene;
+    private scene: Phaser.Scene;
+    private selected: boolean;
 
     resourceType: ResourceType;
     hotkey: number;
@@ -24,6 +25,7 @@ export class Resource {
         fullSizeOffsetY: number,
         fullSizeOffsetWidth: number,
     ) {
+        this.scene = scene;
         this.resourceType = resourceType;
         this.hotkey = hotkey;
         this.fullSizeOffsetX = fullSizeOffsetX;
