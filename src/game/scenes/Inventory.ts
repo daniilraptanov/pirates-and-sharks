@@ -2,6 +2,8 @@ import { Scene } from "phaser";
 import { EventBus } from "../EventBus";
 import inventoryServiceFactory from "../../services/InventoryServiceImpl";
 import { InventoryService } from "../../types/services/InventoryService";
+import { Resource } from "../objects/Resource";
+import { ResourceType } from "../../enums/resource-type";
 
 export class Inventory extends Scene {
     inventoryService: InventoryService;
@@ -18,6 +20,11 @@ export class Inventory extends Scene {
         const inventoryHeight = 180;
 
         const PlayerColor = 0xffe200; // брать из БД
+
+        // TODO
+        const axe = new Resource(this, ResourceType.AXE, );
+        
+
         // Заглобалить
         let Axe;
         let Shovel;
