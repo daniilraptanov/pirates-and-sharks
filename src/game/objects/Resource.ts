@@ -4,7 +4,7 @@ export class Resource {
     private scene: Phaser.Scene;
     private image:Phaser.GameObjects.Image;
     selected: boolean;
-    SomeSelected: boolean;
+    someSelected: boolean;
     resourceType: ResourceType;
     hotkey: string;
 
@@ -38,12 +38,14 @@ export class Resource {
         this.fullSizeOffsetHeight = fullSizeOffsetHeight;
         this.SelectedSizeX = SelectedSizeX;
         this.SelectedSizeY = SelectedSizeY;
+
         this.handleClick = this.handleClick.bind(this);
         this.handleKeyDown = this.handleKeyDown.bind(this);
-        this.MouseOver = this.MouseOver.bind(this);
-        this.MouseOut = this.MouseOut.bind(this);
+        this.mouseOver = this.mouseOver.bind(this);
+        this.mouseOut = this.mouseOut.bind(this);
+        
         this.selected = false;
-        this.SomeSelected = false;
+        this.someSelected = false;
     }
 
     initialize(image:string) {
@@ -51,13 +53,14 @@ export class Resource {
         this.image.setOrigin(0);
         this.image.setInteractive();
         this.image.on('pointerdown', this.handleClick);
-        this.image.on('pointerover', this.MouseOver);
-        this.image.on('pointerout', this.MouseOut);
+        this.image.on('pointerover', this.mouseOver);
+        this.image.on('pointerout', this.mouseOut);
         if(this.scene.input.keyboard){
         this.scene.input.keyboard.on('keydown', this.handleKeyDown);
         }
     }
-    SetPosition(size:number) {
+
+    setPosition(size:number) {
         this.image.setScale(size); 
         if (size == 1) {
             this.image.x = this.fullSizeX;
@@ -83,33 +86,33 @@ export class Resource {
         }
     }
 
-    private MouseOver() {
-        if (!this.selected && !this.SomeSelected) {
-        this.SetPosition(0.5);
+    private mouseOver() {
+        if (!this.selected && !this.someSelected) {
+            this.setPosition(0.5);
         }
     }
 
-    private MouseOut() {
+    private mouseOut() {
         if (!this.selected) {
-        this.SetPosition(1);
+            this.setPosition(1);
         }
     }
 
-    SomeSelectedCheck(CheckSomeSelected:boolean){
-        if (CheckSomeSelected == true){
-            this.SomeSelected = true;
+    someSelectedCheck(checkSomeSelected:boolean){
+        if (checkSomeSelected == true){
+            this.someSelected = true;
         }
         else {
-            this.SomeSelected = false;
+            this.someSelected = false;
         }
     }
 
     private toggleSelected() {
-        if (!this.selected && !this.SomeSelected) {
-            this.SetPosition(0.5);
+        if (!this.selected && !this.someSelected) {
+            this.setPosition(0.5);
             this.selected = true;
         } else {
-            this.SetPosition(1);
+            this.setPosition(1);
             this.selected = false;
         }
     }
