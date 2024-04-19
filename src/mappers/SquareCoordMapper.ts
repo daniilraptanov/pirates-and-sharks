@@ -17,11 +17,17 @@ export class SquareCoordMapper {
     }
 }
 
-export function availableSquaresMap(availableSquares: AvailableSquareDTO[]) {
-    return availableSquares.map((square) => {
+export function availableSquaresMap(data: AvailableSquareDTO | AvailableSquareDTO[]) {
+    const coordsMap = (square: AvailableSquareDTO) => {
         const coords = SquareCoordMapper.toStandard(square.square.x, square.square.y);
         square.square.x = coords.x;
         square.square.y = coords.y;
         return square;
-    });
+    }
+    
+    if (data instanceof Array) {
+        return data.map((square) => coordsMap(square));
+    } else {
+        return coordsMap(data);
+    }
 }

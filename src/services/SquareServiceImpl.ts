@@ -20,13 +20,15 @@ class SquareServiceImpl implements SquareService {
             return cachedSquare;
         }
         const coords = SquareCoordMapper.toMinimal(x, y);
-        const result = await sendApiRequest("/sessions/squares", "post", { x: coords.x, y: coords.y, isCurrentPosition });
+        const result = availableSquaresMap(
+            await sendApiRequest("/sessions/squares", "post", { x: coords.x, y: coords.y, isCurrentPosition })
+        ) as AvailableSquareDTO;
         this.availableSquares.push(result);
         return result;
     }
 
     async getAvailableSquares(): Promise<AvailableSquareDTO[]> {
-        this.availableSquares = availableSquaresMap(await sendApiRequest("/sessions/squares", "get"));
+        this.availableSquares = availableSquaresMap(await sendApiRequest("/sessions/squares", "get")) as AvailableSquareDTO[];
         return this.availableSquares;
     }
 
