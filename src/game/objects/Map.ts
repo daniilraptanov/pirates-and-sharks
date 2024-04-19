@@ -1,3 +1,5 @@
+import { EventType } from "../../enums/event-type";
+import { MapEvent } from "./MapEvent";
 import { MapSquare } from "./MapSquare";
 import { Pirate } from "./Pirate";
 
@@ -31,6 +33,9 @@ export class Map {
                 const data = imageData.data;
 
                 const pirate = new Pirate(scene, 0, 0);
+
+                // TODO
+                const testEvent = new MapEvent(scene, 0, 0);
 
                 for (let y = 0; y < canvas.height; y++) {
                     for (let x = 0; x < canvas.width; x++) {

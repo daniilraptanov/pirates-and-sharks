@@ -1,3 +1,4 @@
+import squareServiceFactory from "../../services/SquareServiceImpl";
 import { Map } from "./Map";
 import { MapSquare } from "./MapSquare";
 
@@ -90,6 +91,15 @@ export class Pirate extends Phaser.GameObjects.Sprite {
                 }
             }
         }
+
+
+        // TODO
+        const squareService = squareServiceFactory();
+        (async () => {
+            await Promise.all(this.allowedSquares.map(coord => {
+                return squareService.saveSquare(coord.x, coord.y, x === coord.x && y === coord.y);
+            }));
+        })();
     }
     
     private setVisibleSquares(x: number, y: number) {

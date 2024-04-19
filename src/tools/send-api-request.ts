@@ -18,7 +18,7 @@ export async function sendApiRequest(
     headers["Content-Type"] = "application/json";
   }
   
-  headers["Authorization"] = `Bearer ${LocalStorageServiceImpl.pullFromStorage(LocalStorageKeys.AUTH_TOKEN)}`;
+  headers["Authorization"] = `Bearer ${LocalStorageServiceImpl.pullFromStorage(LocalStorageKeys.AUTH_TOKEN)} Session ${LocalStorageServiceImpl.pullFromStorage(LocalStorageKeys.SESSION_TOKEN)}`;
 
   try {
     const response = await fetch(SERVER_URL + API_ROUTE + url, {
