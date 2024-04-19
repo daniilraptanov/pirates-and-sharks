@@ -33,9 +33,10 @@ export class Map {
                 const data = imageData.data;
 
                 const pirate = new Pirate(scene, 0, 0);
+                let position = false; // TODO
 
                 // TODO
-                const testEvent = new MapEvent(scene, 0, 0);
+                // const testEvent = new MapEvent(scene, 0, 0);
 
                 for (let y = 0; y < canvas.height; y++) {
                     for (let x = 0; x < canvas.width; x++) {
@@ -46,8 +47,9 @@ export class Map {
 
                         const hexColor = (1 << 24) + (red << 16) + (green << 8) + blue;
                         const square = new MapSquare(scene, x, y, hexColor, pirate);
-                        if (square.isPlayerSpawnPoint) {
-                            pirate.setPosition(square.x, square.y);
+                        if (square.isPlayerSpawnPoint && !position) {
+                            pirate.init(square.x, square.y);
+                            position = true;
                         }
                         Map.mapSquares.push(square);
                     }

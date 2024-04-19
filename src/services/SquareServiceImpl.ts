@@ -4,9 +4,7 @@ import { SquareService } from "../types/services/SquareService";
 
 class SquareServiceImpl implements SquareService {
     private static _instance: SquareServiceImpl;
-    availableSquares: AvailableSquareDTO[] = [];
-
-    private constructor() {}
+    private availableSquares: AvailableSquareDTO[] = [];
 
     static getInstance() {
         if (!SquareServiceImpl._instance) {
@@ -17,7 +15,7 @@ class SquareServiceImpl implements SquareService {
     
     async saveSquare(x: number, y: number, isCurrentPosition: boolean): Promise<AvailableSquareDTO> {
         const cachedSquare = this.findCachedAvailableSquare(x, y);
-        if (cachedSquare) {
+        if (cachedSquare && !isCurrentPosition) {
             return cachedSquare;
         }
         const result = await sendApiRequest("/sessions/squares", "post", { x, y, isCurrentPosition });
@@ -26,11 +24,12 @@ class SquareServiceImpl implements SquareService {
     }
 
     async getAvailableSquares(): Promise<AvailableSquareDTO[]> {
-        return sendApiRequest("/sessions/squares", "get");
+        this.availableSquares = await sendApiRequest("/sessions/squares", "get");
+        return this.availableSquares;
     }
 
     private findCachedAvailableSquare(x: number, y: number): AvailableSquareDTO | undefined {
-        return this.availableSquares.find(square => square.square.x === x && square.square.y === y);
+        return this.availableSquares.find(square => square && square.square.x === x && square.square.y === y);
     }
 }
 
