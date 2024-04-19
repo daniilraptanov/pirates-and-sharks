@@ -1,20 +1,19 @@
 export class MapEvent extends Phaser.GameObjects.Graphics {
     static SIZE = 5;
 
-    constructor(scene: Phaser.Scene, x: number, y: number) {
+    constructor(scene: Phaser.Scene, x: number, y: number) {        
         super(scene, { x, y });
 
         scene.add.existing(this);
 
         this.fillStyle(0xff0000);
-        this.fillCircle(x, y, MapEvent.SIZE);
-        this.strokeCircle(x, y, MapEvent.SIZE);
+        this.fillCircle(0, 0, MapEvent.SIZE);
+        this.strokeCircle(0, 0, MapEvent.SIZE);
 
         this.setDepth(1);
         this.setScale(1);
 
         this.createPulseAnimation();
-        this.playPulseAnimation();
     }
 
     
@@ -27,9 +26,5 @@ export class MapEvent extends Phaser.GameObjects.Graphics {
             repeat: -1,
             yoyo: true
         });
-    }
-
-    private playPulseAnimation() {
-        this.setScale(1);
     }
 }

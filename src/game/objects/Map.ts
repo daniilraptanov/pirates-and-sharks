@@ -1,5 +1,4 @@
-import { EventType } from "../../enums/event-type";
-import { MapEvent } from "./MapEvent";
+import { SquareCoordMapper } from "../../mappers/SquareCoordMapper";
 import { MapSquare } from "./MapSquare";
 import { Pirate } from "./Pirate";
 
@@ -8,7 +7,8 @@ export class Map {
     private static mapSquares: MapSquare[] = [];
 
     static getMapSquare(x: number, y: number): MapSquare {
-        const index = Math.floor(x / MapSquare.SIZE) + Math.floor(y / MapSquare.SIZE) * Map.mapWidth;
+        const coords = SquareCoordMapper.toMinimal(x, y);
+        const index = Math.floor(coords.x) + Math.floor(coords.y) * Map.mapWidth;
         return Map.mapSquares[index];
     }
 
@@ -35,9 +35,6 @@ export class Map {
                 const pirate = new Pirate(scene, 0, 0);
                 let position = false; // TODO
 
-                // TODO
-                // const testEvent = new MapEvent(scene, 0, 0);
-
                 for (let y = 0; y < canvas.height; y++) {
                     for (let x = 0; x < canvas.width; x++) {
                         const index = (y * canvas.width + x) * 4;
@@ -46,7 +43,8 @@ export class Map {
                         const blue = data[index + 2];
 
                         const hexColor = (1 << 24) + (red << 16) + (green << 8) + blue;
-                        const square = new MapSquare(scene, x, y, hexColor, pirate);
+                        const coords = SquareCoordMapper.toStandard(x, y);
+                        const square = new MapSquare(scene, coords.x, coords.y, hexColor, pirate);
                         if (square.isPlayerSpawnPoint && !position) {
                             pirate.init(square.x, square.y);
                             position = true;

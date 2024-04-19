@@ -1,3 +1,4 @@
+import { SquareCoordMapper, availableSquaresMap } from "../mappers/SquareCoordMapper";
 import { sendApiRequest } from "../tools/send-api-request";
 import { AvailableSquareDTO } from "../types/dto/AvailableSquareDTO";
 import { SquareService } from "../types/services/SquareService";
@@ -18,13 +19,14 @@ class SquareServiceImpl implements SquareService {
         if (cachedSquare && !isCurrentPosition) {
             return cachedSquare;
         }
-        const result = await sendApiRequest("/sessions/squares", "post", { x, y, isCurrentPosition });
+        const coords = SquareCoordMapper.toMinimal(x, y);
+        const result = await sendApiRequest("/sessions/squares", "post", { x: coords.x, y: coords.y, isCurrentPosition });
         this.availableSquares.push(result);
         return result;
     }
 
     async getAvailableSquares(): Promise<AvailableSquareDTO[]> {
-        this.availableSquares = await sendApiRequest("/sessions/squares", "get");
+        this.availableSquares = availableSquaresMap(await sendApiRequest("/sessions/squares", "get"));
         return this.availableSquares;
     }
 

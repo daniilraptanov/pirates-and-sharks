@@ -1,6 +1,7 @@
+import { SquareCoordMapper } from "../../mappers/SquareCoordMapper";
 import squareServiceFactory from "../../services/SquareServiceImpl";
 import { Map } from "./Map";
-import { MapSquare } from "./MapSquare";
+import { MapEvent } from "./MapEvent";
 
 export class Pirate extends Phaser.GameObjects.Sprite {
     private static SIZE = 20;
@@ -84,8 +85,9 @@ export class Pirate extends Phaser.GameObjects.Sprite {
                 { dx: 0, dy: k }   // backward
             ];
             for (const offset of offsets) {
-                const xCoord = x + offset.dx * MapSquare.SIZE;
-                const yCoord = y + offset.dy * MapSquare.SIZE;
+                const coords = SquareCoordMapper.toStandard(offset.dx, offset.dy);
+                const xCoord = x + coords.x;
+                const yCoord = y + coords.y;
 
                 if (Map.hasLineOfSight(x, y, xCoord, yCoord)) {
                     this.allowedSquares.push({ x: xCoord, y: yCoord });
@@ -99,9 +101,10 @@ export class Pirate extends Phaser.GameObjects.Sprite {
         for (let k = 1; k <= Pirate.VISIBILITY_OFFSET; k++) {
             for (let dx = k; dx >= -k; dx--) {
                 for (let dy = k; dy >= -k; dy--) {
+                    const coords = SquareCoordMapper.toStandard(dx, dy);
                     const data = {
-                        x: x + dx * MapSquare.SIZE,
-                        y: y + dy * MapSquare.SIZE,
+                        x: x + coords.x,
+                        y: y + coords.y,
                     }
 
                     if (Map.hasLineOfSight(x, y, data.x, data.y)) {
@@ -113,8 +116,12 @@ export class Pirate extends Phaser.GameObjects.Sprite {
 
         const squareService = squareServiceFactory();
         (async () => {
-            await Promise.all(this.visibleSquares.map(square => {
-                return squareService.saveSquare(square.x, square.y, x === square.x && y === square.y);
+            await Promise.all(this.visibleSquares.map(async (square) => {
+                const result = await squareService.saveSquare(square.x, square.y, x === square.x && y === square.y);
+                // TODO
+                if (result.square.event) {
+                    new MapEvent(this.scene, result.square.x, result.square.y);
+                }
             }));
         })();
     }
@@ -157,6 +164,10 @@ export class Pirate extends Phaser.GameObjects.Sprite {
                     if (square.isCurrentPosition) {
                         x = square.square.x;
                         y = square.square.y;
+                    }
+                    // TODO
+                    if (square.square.event) {
+                        new MapEvent(this.scene, square.square.x, square.square.y);
                     }
                     return { x: square.square.x, y: square.square.y };
                 });

@@ -8,7 +8,7 @@ export class MapSquare extends Phaser.GameObjects.Sprite {
     pirate: Pirate;
 
     constructor(scene: Phaser.Scene, x: number, y: number, color: number, pirate: Pirate) {
-        super(scene, x * MapSquare.SIZE, y * MapSquare.SIZE, "");
+        super(scene, x, y, "");
         scene.add.existing(this);
 
         this.setSquareType(color);
