@@ -68,6 +68,7 @@ export class Game extends Scene
         });
         EventBus.emit('current-scene-ready', this);
         this.scene.launch('Inventory');
+        this.scene.launch('EventInfo');
     }
 
     update() {

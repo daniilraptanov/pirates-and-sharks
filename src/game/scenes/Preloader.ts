@@ -34,12 +34,21 @@ export class Preloader extends Scene
         this.load.image("rock", "textures/rock_50x50.png");
         this.load.image("sand", "textures/sand_50x50.png");
         this.load.image("pirate", "textures/pirate_50x50.png");
-        this.load.image("Axe", "InventoryBar/Axe.png")
-        this.load.image("Pickaxe", "InventoryBar/Pickaxe.png")
-        this.load.image("Shovel", "InventoryBar/Shovel.png")
-        this.load.image("Rope", "InventoryBar/Rope.png")
-        this.load.image("Spear", "InventoryBar/Spear.png")
-        this.load.image("Rom", "InventoryBar/Rom.png")
+        this.load.image("Axe", "InventoryBar/Axe.png");
+        this.load.image("Pickaxe", "InventoryBar/Pickaxe.png");
+        this.load.image("Shovel", "InventoryBar/Shovel.png");
+        this.load.image("Rope", "InventoryBar/Rope.png");
+        this.load.image("Spear", "InventoryBar/Spear.png");
+        this.load.image("Rom", "InventoryBar/Rom.png");
+
+        this.load.image("+Axe", "events/+Axe_75x75.png");
+        this.load.image("+Pickaxe", "events/+Pickaxe_75x75.png");
+        this.load.image("+Rope", "events/+Rope_75x75.png");
+        this.load.image("+Rum", "events/+Rum_75x75.png");
+        this.load.image("+Spear", "events/+Spear_75x75.png");
+
+        this.load.image("-Spear", "events/-Spear_75x75.png");
+        this.load.image("-Pickaxe", "events/-Pickaxe_75x75.png");
     }
 
     create ()
