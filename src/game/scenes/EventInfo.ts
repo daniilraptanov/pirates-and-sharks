@@ -51,7 +51,7 @@ export class EventInfo extends Scene
             line.closePath();
             line.strokePath();
         }
-        this.image = this.add.image(5,51,"+Rum");
+        this.image = this.add.image(5,51,"+Spear");
         this.image.setOrigin(0);
         this.image.setInteractive();
         this.image.displayWidth = inventoryWidth-4;
