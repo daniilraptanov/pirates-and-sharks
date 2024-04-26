@@ -19,6 +19,8 @@ export class Pirate extends Phaser.GameObjects.Sprite {
 
     private possibleTurns: Phaser.GameObjects.Arc[] = [];
 
+    private events: MapEvent[] = [];
+
 
     constructor(scene: Phaser.Scene, x: number, y: number) {
         super(scene, x * Pirate.SIZE, y * Pirate.SIZE, "");
@@ -59,7 +61,6 @@ export class Pirate extends Phaser.GameObjects.Sprite {
             this.setVisibleSquares(x, y);
             this.setPosition(x, y);
             this.renderPossibleTurnsCircles();
-            this.changeVisibilityArea();
 
             this.changeIsSelected();
             this.selectedHandler();
@@ -97,6 +98,7 @@ export class Pirate extends Phaser.GameObjects.Sprite {
     }
     
     private setVisibleSquares(x: number, y: number) {
+        this.changeVisibilityArea(false);
         this.visibleSquares = [{ x: this.x, y: this.y }];
         for (let k = 1; k <= Pirate.VISIBILITY_OFFSET; k++) {
             for (let dx = k; dx >= -k; dx--) {
@@ -113,17 +115,8 @@ export class Pirate extends Phaser.GameObjects.Sprite {
                 }
             }
         }
-
-        const squareService = squareServiceFactory();
-        (async () => {
-            await Promise.all(this.visibleSquares.map(async (square) => {
-                const result = await squareService.saveSquare(square.x, square.y, x === square.x && y === square.y);
-                // TODO
-                if (result.square.event) {
-                    new MapEvent(this.scene, result.square.x, result.square.y);
-                }
-            }));
-        })();
+        this.changeVisibilityArea(true);
+        this.updateMapEventViews(x, y);
     }
 
     private renderPossibleTurnsCircles() {
@@ -144,10 +137,10 @@ export class Pirate extends Phaser.GameObjects.Sprite {
         this.possibleTurns = [];
     }
 
-    private changeVisibilityArea() {
+    private changeVisibilityArea(visible: boolean) {
         this.visibleSquares.forEach(square => {
             const mapSquare = Map.getMapSquare(square.x, square.y);
-            mapSquare?.setSquareTint(true);
+            mapSquare?.setSquareTint(visible);
         });
     }
 
@@ -157,22 +150,34 @@ export class Pirate extends Phaser.GameObjects.Sprite {
         return this;
     }
 
+    updateMapEventViews(x: number, y: number) {
+        this.events.forEach((event) => {
+            event.destroy();
+        });
+
+        const squareService = squareServiceFactory();
+        (async () => {
+            await Promise.all(this.visibleSquares.map(async (square) => {
+                const result = await squareService.saveSquare(square.x, square.y, x === square.x && y === square.y);
+                if (result.square.event) {
+                    this.events.push(new MapEvent(this.scene, square.x, square.y));
+                }
+            }));
+        })();
+    }
+
+    // TODO :: use initial coordinates
     init(x: number, y: number) {
         (async () => {
-            this.visibleSquares = (await squareServiceFactory().getAvailableSquares())
-                .map((square) => {
-                    if (square.isCurrentPosition) {
-                        x = square.square.x;
-                        y = square.square.y;
-                    }
-                    // TODO
-                    if (square.square.event) {
-                        new MapEvent(this.scene, square.square.x, square.square.y);
-                    }
-                    return { x: square.square.x, y: square.square.y };
-                });
-            this.setPosition(x, y);
-            this.changeVisibilityArea();
+            const currentPosition = (await squareServiceFactory().getAvailableSquares())
+                .find((square) => square.isCurrentPosition);
+
+            if (!currentPosition) {
+                return;
+            }
+
+            this.setVisibleSquares(currentPosition.square.x, currentPosition.square.y);
+            this.setPosition(currentPosition.square.x, currentPosition.square.y);
         })();
     }
 }
