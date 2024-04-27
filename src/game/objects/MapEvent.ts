@@ -1,12 +1,23 @@
 import { EventType } from "../../enums/event-type";
+import { EventInfo } from "../scenes/EventInfo";
 
 export class MapEvent extends Phaser.GameObjects.Graphics {
     static SIZE = 5;
+    static INTERACTIVE_SIZE = 15;
+    
+    static NORMAL_SCALE = 2;
+    static PULSE_SCALE = 4;
+    static SELECTED_SCALE = 3;
+    
     private eventType: EventType;
     private pulseTween: Phaser.Tweens.Tween;
+    private eventInfoScene: EventInfo;
+    
+    isSelected: boolean = false;
 
     constructor(scene: Phaser.Scene, x: number, y: number, eventType: EventType) {
         super(scene, { x, y });
+        this.eventInfoScene = scene.scene.get('EventInfo') as EventInfo;
         this.eventType = eventType;
 
         scene.add.existing(this);
@@ -16,16 +27,38 @@ export class MapEvent extends Phaser.GameObjects.Graphics {
         this.strokeCircle(0, 0, MapEvent.SIZE);
 
         this.setDepth(1);
-        this.setScale(1);
+        this.setScale(MapEvent.NORMAL_SCALE);
 
+        const bounds = new Phaser.Geom.Rectangle(
+            -MapEvent.SIZE / 2, 
+            -MapEvent.SIZE / 2, 
+            MapEvent.INTERACTIVE_SIZE, 
+            MapEvent.INTERACTIVE_SIZE
+        );
+        this.setInteractive(bounds, Phaser.Geom.Rectangle.Contains);
+        this.on('pointerdown', this.handlePointerDown, this);
         this.createPulseAnimation();
     }
 
+    private handlePointerDown() {
+        this.stopPulseAnimation();
+        this.eventInfoScene.setInfo(this);
+    }
+
+    handleIsSelected() {
+        if (this.isSelected) {
+            this.setScale(MapEvent.NORMAL_SCALE);
+            this.isSelected = false;
+        } else {
+            this.setScale(MapEvent.SELECTED_SCALE);
+            this.isSelected = true;
+        }
+    }
     
     private createPulseAnimation() {
         this.pulseTween = this.scene.tweens.add({
             targets: this,
-            scale: { from: 1, to: 3 },
+            scale: { from: MapEvent.NORMAL_SCALE, to: MapEvent.PULSE_SCALE },
             duration: 1000,
             ease: 'Linear',
             repeat: -1,
@@ -36,6 +69,7 @@ export class MapEvent extends Phaser.GameObjects.Graphics {
     stopPulseAnimation() {
         if (this.pulseTween && this.pulseTween.isPlaying()) {
             this.pulseTween.stop();
+            this.setScale(MapEvent.NORMAL_SCALE);
         }
     }
 
@@ -89,16 +123,22 @@ export class MapEvent extends Phaser.GameObjects.Graphics {
         return this.eventType == EventType.SPAWN_SHOVEL;
     }
 
-    get isAdvantageEvent() {
+    get isSpawnEvent() {
         return (
-            this.isTree ||
-            this.isCave ||
             this.isSpawnRope ||
             this.isSpawnSpear ||
             this.isSpawnRum ||
             this.isSpawnAxe ||
             this.isSpawnPickaxe ||
             this.isSpawnShovel
+        );
+    }
+
+    get isAdvantageEvent() {
+        return (
+            this.isTree ||
+            this.isCave ||
+            this.isSpawnEvent
         );
     }
 

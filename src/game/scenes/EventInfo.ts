@@ -1,9 +1,14 @@
 import { Scene } from "phaser";
 import { EventBus } from "../EventBus";
+import { MapEvent } from "../objects/MapEvent";
 
 export class EventInfo extends Scene
 {
-    image:Phaser.GameObjects.Image;
+    selectedMapEvent: MapEvent;
+    image: Phaser.GameObjects.Image;
+    name: Phaser.GameObjects.Text;
+    overview: Phaser.GameObjects.Text;
+
     constructor ()
     {
         super('EventInfo');
@@ -11,7 +16,6 @@ export class EventInfo extends Scene
 
     create ()
     {
-        // вкл/выкл
         let ViewInfoBar = true;
         let ViewBorder;
         let ViewFill;
@@ -26,7 +30,7 @@ export class EventInfo extends Scene
         const inventoryWidth = 300;
         const inventoryHeight = 450;
         const PlayerColor = 0xffe200;
-        //Прямоугольник с рамкой
+        
         const inventoryRect = this.add.rectangle(0, 0, inventoryWidth, inventoryHeight, PlayerColor);
         inventoryRect.setOrigin(0);
         inventoryRect.setAlpha(ViewFill);
@@ -36,7 +40,7 @@ export class EventInfo extends Scene
         borderRect.lineStyle(borderThickness, borderColor);
         borderRect.strokeRect(3, 3, inventoryWidth, inventoryHeight);
         borderRect.setAlpha(ViewBorder);
-        //Полоски
+      
         for (let i = 1; i < 3; i++) {
             const line = this.add.graphics();
             line.lineStyle(4, PlayerColor);
@@ -52,18 +56,59 @@ export class EventInfo extends Scene
             line.closePath();
             line.strokePath();
         }
-        //Пикча
-        this.image = this.add.image(5,51,"+Spear");
+       
+        this.image = this.add.image(5, 51, "-Pickaxe");
         this.image.setOrigin(0);
         this.image.setInteractive();
-        this.image.displayWidth = inventoryWidth-4;
-        this.image.displayHeight = inventoryWidth-2;
+        this.image.displayWidth = inventoryWidth - 4;
+        this.image.displayHeight = inventoryWidth - 2;
         this.image.setAlpha(ViewBorder);
-        //Тексты
-        const EventName = this.add.text(8, 15, "Название", { color: '#000000', fontFamily:'sans-serif', fontSize: '20px' });
-        EventName.setAlpha(ViewBorder);
-        const EventOverview = this.add.text(8, 355, "Описание", { color: '#000000', fontFamily:'sans-serif', fontSize: '20px' });
-        EventOverview.setAlpha(ViewBorder);
+        
+        this.name = this.add.text(8, 15, "", { color: '#000000', fontFamily:'sans-serif', fontSize: '20px' });
+        this.name.setAlpha(ViewBorder);
+        this.overview = this.add.text(8, 355, "", { color: '#000000', fontFamily:'sans-serif', fontSize: '20px' });
+        this.overview.setAlpha(ViewBorder);
+
         EventBus.emit('current-scene-ready', this);
+    }
+
+    changeSelectedMapEvent(mapEvent: MapEvent) {
+        mapEvent.handleIsSelected();
+        this.selectedMapEvent?.handleIsSelected();
+        this.selectedMapEvent = mapEvent;
+    }
+
+    setInfo(mapEvent: MapEvent) {
+        this.changeSelectedMapEvent(mapEvent);
+        
+        this.image.setTexture(
+            mapEvent.isCobblestone ? "-Pickaxe" :
+            mapEvent.isBeast ? "-Spear" :
+            mapEvent.isSpawnAxe ? "+Axe" :
+            mapEvent.isSpawnPickaxe ? "+Pickaxe" :
+            mapEvent.isSpawnRope ? "+Rope" :
+            mapEvent.isSpawnRum ? "+Rum" :
+            mapEvent.isSpawnSpear ? "+Spear" : ""
+        );
+
+        this.name.setText(
+            mapEvent.isCobblestone ? "Cobblestone" :
+            mapEvent.isBeast ? "Beast" :
+            mapEvent.isSpawnAxe ? "Axe" :
+            mapEvent.isSpawnPickaxe ? "Pickaxe" :
+            mapEvent.isSpawnRope ? "Rope" :
+            mapEvent.isSpawnRum ? "Rum" :
+            mapEvent.isSpawnSpear ? "Spear" : ""
+        );
+
+        this.overview.setText(
+            mapEvent.isCobblestone ? "Cobblestone" :
+            mapEvent.isBeast ? "Beast" :
+            mapEvent.isSpawnAxe ? "Axe" :
+            mapEvent.isSpawnPickaxe ? "Pickaxe" :
+            mapEvent.isSpawnRope ? "Rope" :
+            mapEvent.isSpawnRum ? "Rum" :
+            mapEvent.isSpawnSpear ? "Spear" : ""
+        );
     }
 }
