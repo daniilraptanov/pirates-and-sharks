@@ -110,7 +110,6 @@ export class Pirate extends Phaser.GameObjects.Sprite {
             }
         }
         this.changeVisibilityArea(true);
-        this.addMapEvents(x, y);
     }
 
     private renderPossibleTurnsCircles() {
@@ -148,19 +147,6 @@ export class Pirate extends Phaser.GameObjects.Sprite {
         });
     }
 
-    addMapEvents(x: number, y: number) {
-        const squareService = squareServiceFactory();
-        (async () => {
-            await Promise.all(this.visibleSquares.map(async (square) => {
-                const result = await squareService.saveSquare(square.x, square.y, x === square.x && y === square.y);
-                if (result.square.event) {
-                    square.activateMapEvent(result.square.event);
-                }
-            }));
-        })();
-    }
-
-    // TODO :: use initial coordinates
     init(x: number, y: number) {
         (async () => {
             const currentPosition = (await squareServiceFactory().getAvailableSquares())

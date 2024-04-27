@@ -1,10 +1,12 @@
 import { SquareCoordMapper } from "../../mappers/SquareCoordMapper";
+import squareServiceFactory from "../../services/SquareServiceImpl";
 import { MapSquare } from "./MapSquare";
 import { Pirate } from "./Pirate";
 
 export class Map {
     private static mapWidth = 128;
     private static mapSquares: MapSquare[] = [];
+    private static squareService = squareServiceFactory();
 
     static getMapSquare(x: number, y: number): MapSquare {
         const coords = SquareCoordMapper.toMinimal(x, y);
@@ -65,7 +67,9 @@ export class Map {
         let err = dx - dy;
     
         while (x1 !== x2 || y1 !== y2) {
-            if (Map.getMapSquare(x1, y1)?.isRock) {
+            const mapSquare = Map.getMapSquare(x1, y1);
+            Map.addMapEvent(mapSquare, x1 , y1);
+            if (mapSquare?.isObstacle) {
                 return false; // There's an obstacle, no line of sight
             }
     
@@ -81,6 +85,15 @@ export class Map {
         }
     
         return true; // No obstacles found, line of sight is clear
+    }
+
+    static addMapEvent(square: MapSquare, x: number, y: number) {
+        (async () => {
+            const result = await Map.squareService.saveSquare(square.x, square.y, x === square.x && y === square.y);
+            if (result.square.event) {
+                square.activateMapEvent(result.square.event);
+            }
+        })();
     }
 }
 
