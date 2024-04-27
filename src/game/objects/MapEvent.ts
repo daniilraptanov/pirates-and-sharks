@@ -3,6 +3,7 @@ import { EventType } from "../../enums/event-type";
 export class MapEvent extends Phaser.GameObjects.Graphics {
     static SIZE = 5;
     private eventType: EventType;
+    private pulseTween: Phaser.Tweens.Tween;
 
     constructor(scene: Phaser.Scene, x: number, y: number, eventType: EventType) {
         super(scene, { x, y });
@@ -22,7 +23,7 @@ export class MapEvent extends Phaser.GameObjects.Graphics {
 
     
     private createPulseAnimation() {
-        this.scene.tweens.add({
+        this.pulseTween = this.scene.tweens.add({
             targets: this,
             scale: { from: 1, to: 3 },
             duration: 1000,
@@ -30,6 +31,18 @@ export class MapEvent extends Phaser.GameObjects.Graphics {
             repeat: -1,
             yoyo: true
         });
+    }
+
+    stopPulseAnimation() {
+        if (this.pulseTween && this.pulseTween.isPlaying()) {
+            this.pulseTween.stop();
+        }
+    }
+
+    playPulseAnimation() {
+        if (this.pulseTween && this.pulseTween.paused) {
+            this.pulseTween.play();
+        }
     }
 
     get isTree() {

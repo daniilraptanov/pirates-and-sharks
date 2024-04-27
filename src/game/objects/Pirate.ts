@@ -144,7 +144,7 @@ export class Pirate extends Phaser.GameObjects.Sprite {
 
     deleteMapEventsViews() {
         this.visibleSquares.forEach((mapSquare) => {
-            mapSquare.deleteMapEvent();
+            mapSquare.disableMapEvent();
         });
     }
 
@@ -154,7 +154,7 @@ export class Pirate extends Phaser.GameObjects.Sprite {
             await Promise.all(this.visibleSquares.map(async (square) => {
                 const result = await squareService.saveSquare(square.x, square.y, x === square.x && y === square.y);
                 if (result.square.event) {
-                    square.addMapEvent(result.square.event);
+                    square.activateMapEvent(result.square.event);
                 }
             }));
         })();

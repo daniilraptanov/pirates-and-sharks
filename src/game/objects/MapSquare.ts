@@ -121,14 +121,14 @@ export class MapSquare extends Phaser.GameObjects.Sprite {
         return this;
     }
 
-    addMapEvent(eventType: EventType) {
+    activateMapEvent(eventType: EventType) {
         if (!this.mapEvent) {
             this.mapEvent = new MapEvent(this.scene, this.x, this.y, eventType);
+            this.mapEvent.playPulseAnimation();
         }
     }
 
-    deleteMapEvent() {
-        this.mapEvent?.destroy();
-        this.mapEvent = null;
+    disableMapEvent() {
+        this.mapEvent?.stopPulseAnimation();
     }
 }
