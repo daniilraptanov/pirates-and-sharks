@@ -1,7 +1,7 @@
 import { SquareCoordMapper } from "../../mappers/SquareCoordMapper";
 import squareServiceFactory from "../../services/SquareServiceImpl";
 import { Map } from "./Map";
-import { MapEvent } from "./MapEvent";
+import { MapSquare } from "./MapSquare";
 
 export class Pirate extends Phaser.GameObjects.Sprite {
     private static SIZE = 20;
@@ -13,13 +13,10 @@ export class Pirate extends Phaser.GameObjects.Sprite {
 
     private isSelected = false;
 
-    // TODO :: save squares as MapSquare[]
-    private allowedSquares: { x: number, y: number }[] = [];
-    private visibleSquares: { x: number, y: number }[] = [];
+    private allowedSquares: MapSquare[] = [];
+    private visibleSquares: MapSquare[] = [];
 
     private possibleTurns: Phaser.GameObjects.Arc[] = [];
-
-    private events: MapEvent[] = [];
 
 
     constructor(scene: Phaser.Scene, x: number, y: number) {
@@ -91,7 +88,7 @@ export class Pirate extends Phaser.GameObjects.Sprite {
                 const yCoord = y + coords.y;
 
                 if (Map.hasLineOfSight(x, y, xCoord, yCoord)) {
-                    this.allowedSquares.push({ x: xCoord, y: yCoord });
+                    this.allowedSquares.push(Map.getMapSquare(xCoord, yCoord));
                 }
             }
         }
@@ -99,35 +96,31 @@ export class Pirate extends Phaser.GameObjects.Sprite {
     
     private setVisibleSquares(x: number, y: number) {
         this.changeVisibilityArea(false);
-        this.visibleSquares = [{ x: this.x, y: this.y }];
+        this.deleteMapEventsViews();
+        this.visibleSquares = [Map.getMapSquare(this.x, this.y)];
         for (let k = 1; k <= Pirate.VISIBILITY_OFFSET; k++) {
             for (let dx = k; dx >= -k; dx--) {
                 for (let dy = k; dy >= -k; dy--) {
                     const coords = SquareCoordMapper.toStandard(dx, dy);
-                    const data = {
-                        x: x + coords.x,
-                        y: y + coords.y,
-                    }
-
-                    if (Map.hasLineOfSight(x, y, data.x, data.y)) {
-                        this.visibleSquares.push(data);
+                    const mapSquare = Map.getMapSquare(x + coords.x, y + coords.y);
+                    if (Map.hasLineOfSight(x, y, mapSquare.x, mapSquare.y)) {
+                        this.visibleSquares.push(mapSquare);
                     }
                 }
             }
         }
         this.changeVisibilityArea(true);
-        this.updateMapEventViews(x, y);
+        this.addMapEvents(x, y);
     }
 
     private renderPossibleTurnsCircles() {
         this.clearPossibleTurnsCircles();
 
-        this.allowedSquares.forEach(square => {
-            const mapSquare = Map.getMapSquare(square.x, square.y);
+        this.allowedSquares.forEach(mapSquare => {
             if (!mapSquare?.isMovable) {
                 return;
             }
-            const circle = this.scene.add.circle(square.x, square.y, 5, 0xffffff);
+            const circle = this.scene.add.circle(mapSquare.x, mapSquare.y, 5, 0xffffff);
             this.possibleTurns.push(circle);
         });
     }
@@ -138,8 +131,7 @@ export class Pirate extends Phaser.GameObjects.Sprite {
     }
 
     private changeVisibilityArea(visible: boolean) {
-        this.visibleSquares.forEach(square => {
-            const mapSquare = Map.getMapSquare(square.x, square.y);
+        this.visibleSquares.forEach(mapSquare => {
             mapSquare?.setSquareTint(visible);
         });
     }
@@ -150,17 +142,19 @@ export class Pirate extends Phaser.GameObjects.Sprite {
         return this;
     }
 
-    updateMapEventViews(x: number, y: number) {
-        this.events.forEach((event) => {
-            event.destroy();
+    deleteMapEventsViews() {
+        this.visibleSquares.forEach((mapSquare) => {
+            mapSquare.deleteMapEvent();
         });
+    }
 
+    addMapEvents(x: number, y: number) {
         const squareService = squareServiceFactory();
         (async () => {
             await Promise.all(this.visibleSquares.map(async (square) => {
                 const result = await squareService.saveSquare(square.x, square.y, x === square.x && y === square.y);
                 if (result.square.event) {
-                    this.events.push(new MapEvent(this.scene, square.x, square.y));
+                    square.addMapEvent(result.square.event);
                 }
             }));
         })();

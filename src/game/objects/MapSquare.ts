@@ -1,9 +1,12 @@
+import { EventType } from "../../enums/event-type";
 import { MapSquareType } from "../../enums/map-square-type";
+import { MapEvent } from "./MapEvent";
 import { Pirate } from "./Pirate";
 
 export class MapSquare extends Phaser.GameObjects.Sprite {
     static SIZE = 50;
 
+    mapEvent?: MapEvent | null;
     squareType: MapSquareType;
     pirate: Pirate;
 
@@ -105,5 +108,16 @@ export class MapSquare extends Phaser.GameObjects.Sprite {
             this.isVisibility || visibility ? 0xffffff : 0x404040
         ));
         return this;
+    }
+
+    addMapEvent(eventType: EventType) {
+        if (!this.mapEvent) {
+            this.mapEvent = new MapEvent(this.scene, this.x, this.y);
+        }
+    }
+
+    deleteMapEvent() {
+        this.mapEvent?.destroy();
+        this.mapEvent = null;
     }
 }
