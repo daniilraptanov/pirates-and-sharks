@@ -39,6 +39,10 @@ export class MapSquare extends Phaser.GameObjects.Sprite {
     }
 
     get isMovable() {
+        if (this.mapEvent?.isObstacleEvent) {
+            return false;
+        }
+
         return (
             this.isForest ||
             this.isBeach ||
@@ -58,6 +62,13 @@ export class MapSquare extends Phaser.GameObjects.Sprite {
             this.isPlayerSpawnPoint ||
             this.isCaveSpawnPoint
         )
+    }
+
+    get isObstacle() {
+        return (
+            this.isRock ||
+            this.mapEvent?.isObstacleEvent
+        );
     }
 
     get isForest() {
@@ -112,7 +123,7 @@ export class MapSquare extends Phaser.GameObjects.Sprite {
 
     addMapEvent(eventType: EventType) {
         if (!this.mapEvent) {
-            this.mapEvent = new MapEvent(this.scene, this.x, this.y);
+            this.mapEvent = new MapEvent(this.scene, this.x, this.y, eventType);
         }
     }
 

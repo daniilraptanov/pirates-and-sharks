@@ -166,12 +166,13 @@ export class Pirate extends Phaser.GameObjects.Sprite {
             const currentPosition = (await squareServiceFactory().getAvailableSquares())
                 .find((square) => square.isCurrentPosition);
 
-            if (!currentPosition) {
-                return;
+            if (currentPosition) {
+                x = currentPosition.square.x;
+                y = currentPosition.square.y;
             }
 
-            this.setVisibleSquares(currentPosition.square.x, currentPosition.square.y);
-            this.setPosition(currentPosition.square.x, currentPosition.square.y);
+            this.setVisibleSquares(x, y);
+            this.setPosition(x, y);
         })();
     }
 }
