@@ -53,10 +53,10 @@ export class Pirate extends Phaser.GameObjects.Sprite {
         }
     }
 
-    move(x: number, y: number) {
+    async move(x: number, y: number) {
         if (this.isSelected && this.isAllowedSquare(x, y)) {
-            this.setVisibleSquares(x, y);
-            this.setPosition(x, y);
+            await this.setVisibleSquares(x, y);
+            this.setPiratePosition(x, y);
             this.renderPossibleTurnsCircles();
 
             this.changeIsSelected();
@@ -73,7 +73,7 @@ export class Pirate extends Phaser.GameObjects.Sprite {
         return false;
     }
 
-    private setAllowedSquares(x: number, y: number) {
+    private async setAllowedSquares(x: number, y: number) {
         this.allowedSquares = [];
         for (let k = 1; k <= Pirate.TURN_OFFSET; k++) {
             const offsets = [
@@ -87,14 +87,14 @@ export class Pirate extends Phaser.GameObjects.Sprite {
                 const xCoord = x + coords.x;
                 const yCoord = y + coords.y;
 
-                if (Map.hasLineOfSight(x, y, xCoord, yCoord)) {
+                if (await Map.hasLineOfSight(x, y, xCoord, yCoord)) {
                     this.allowedSquares.push(Map.getMapSquare(xCoord, yCoord));
                 }
             }
         }
     }
     
-    private setVisibleSquares(x: number, y: number) {
+    private async setVisibleSquares(x: number, y: number) {
         this.changeVisibilityArea(false);
         this.deleteMapEventsViews();
         this.visibleSquares = [Map.getMapSquare(this.x, this.y)];
@@ -103,7 +103,7 @@ export class Pirate extends Phaser.GameObjects.Sprite {
                 for (let dy = k; dy >= -k; dy--) {
                     const coords = SquareCoordMapper.toStandard(dx, dy);
                     const mapSquare = Map.getMapSquare(x + coords.x, y + coords.y);
-                    if (Map.hasLineOfSight(x, y, mapSquare.x, mapSquare.y)) {
+                    if (await Map.hasLineOfSight(x, y, mapSquare.x, mapSquare.y)) {
                         this.visibleSquares.push(mapSquare);
                     }
                 }
@@ -135,9 +135,9 @@ export class Pirate extends Phaser.GameObjects.Sprite {
         });
     }
 
-    setPosition(x: number, y: number) {
+    async setPiratePosition(x: number, y: number) {
         super.setPosition(x, y);
-        this.setAllowedSquares(x, y);
+        await this.setAllowedSquares(x, y);
         return this;
     }
 
@@ -157,8 +157,8 @@ export class Pirate extends Phaser.GameObjects.Sprite {
                 y = currentPosition.square.y;
             }
 
-            this.setVisibleSquares(x, y);
-            this.setPosition(x, y);
+            await this.setVisibleSquares(x, y);
+            this.setPiratePosition(x, y);
         })();
     }
 }

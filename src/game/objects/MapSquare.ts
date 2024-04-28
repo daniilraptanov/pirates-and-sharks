@@ -24,9 +24,9 @@ export class MapSquare extends Phaser.GameObjects.Sprite {
         this.setSquareTint();
     }
 
-    private handleClick(pointer: Phaser.Input.Pointer) {
+    private async handleClick(pointer: Phaser.Input.Pointer) {
         if (pointer.leftButtonDown() && this.pirate && this.isMovable) {
-            this.pirate.move(this.x, this.y);
+            await this.pirate.move(this.x, this.y);
         }
     }
 

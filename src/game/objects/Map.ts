@@ -58,7 +58,7 @@ export class Map {
         };
     }
 
-    static hasLineOfSight(x1: number, y1: number, x2: number, y2: number): boolean {
+    static async hasLineOfSight(x1: number, y1: number, x2: number, y2: number): Promise<boolean> {
         // Implementation of Bresenham's line algorithm
         const dx = Math.abs(x2 - x1);
         const dy = Math.abs(y2 - y1);
@@ -66,25 +66,23 @@ export class Map {
         const sy = y1 < y2 ? 1 : -1;
         let err = dx - dy;
     
-        (async () => {
-            for (; x1 !== x2 || y1 !== y2;) {
-                const mapSquare = Map.getMapSquare(x1, y1);
-                await Map.addMapEvent(mapSquare, x1, y1);
-                if (mapSquare?.isObstacle) {
-                    return false; // There's an obstacle, no line of sight
-                }
-            
-                const e2 = 2 * err;
-                if (e2 > -dy) {
-                    err -= dy;
-                    x1 += sx;
-                }
-                if (e2 < dx) {
-                    err += dx;
-                    y1 += sy;
-                }
-            }    
-        })();    
+        for (; x1 !== x2 || y1 !== y2;) {
+            const mapSquare = Map.getMapSquare(x1, y1);
+            await Map.addMapEvent(mapSquare, x1, y1);
+            if (mapSquare?.isObstacle) {
+                return false; // There's an obstacle, no line of sight
+            }
+        
+            const e2 = 2 * err;
+            if (e2 > -dy) {
+                err -= dy;
+                x1 += sx;
+            }
+            if (e2 < dx) {
+                err += dx;
+                y1 += sy;
+            }
+        }
     
         return true; // No obstacles found, line of sight is clear
     }
