@@ -22,12 +22,13 @@
         "build": "vite build --config vite/config.prod.mjs"
     },
     "dependencies": {
+        "http-status-codes": "^2.3.0",
         "mobx": "^6.12.3",
         "mobx-react": "^9.1.1",
         "phaser": "^3.80.1",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
-        "http-status-codes": "^2.3.0"
+        "socket.io-client": "^4.7.5"
     },
     "devDependencies": {
         "@types/react": "^18.2.55",

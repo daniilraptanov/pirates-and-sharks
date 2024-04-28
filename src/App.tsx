@@ -4,6 +4,7 @@ import { observer } from 'mobx-react';
 import Welcome from './components/Welcome';
 import userServiceFactory from './services/UserServiceImpl';
 import SessionConnect from './components/SessionConnect';
+import { MessageServiceImpl } from './services/MessageServiceImpl';
 
 const App = observer(() =>
 {
@@ -31,6 +32,9 @@ const App = observer(() =>
 
     useEffect(() => {
         setIsAuth(userServiceFactory().isAuth);
+        MessageServiceImpl.initialize((data) => {
+            console.log("DATA => ", data); // TODO
+        });
     }, []);
 
     return (

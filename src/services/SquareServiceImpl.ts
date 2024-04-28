@@ -7,6 +7,10 @@ class SquareServiceImpl implements SquareService {
     private static _instance: SquareServiceImpl;
     private availableSquares: AvailableSquareDTO[] = [];
 
+    private findCachedAvailableSquare(x: number, y: number): AvailableSquareDTO | undefined {
+        return this.availableSquares.find(square => square && square.square.x === x && square.square.y === y);
+    }
+
     static getInstance() {
         if (!SquareServiceImpl._instance) {
             SquareServiceImpl._instance = new SquareServiceImpl();
@@ -32,8 +36,8 @@ class SquareServiceImpl implements SquareService {
         return this.availableSquares;
     }
 
-    private findCachedAvailableSquare(x: number, y: number): AvailableSquareDTO | undefined {
-        return this.availableSquares.find(square => square && square.square.x === x && square.square.y === y);
+    async getUsersPositions(): Promise<AvailableSquareDTO[]> {
+        return sendApiRequest("/sessions/squares/positions", "get");
     }
 }
 

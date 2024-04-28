@@ -22,13 +22,19 @@ class SessionServiceImpl implements SessionService {
         return LocalStorageServiceImpl.pullFromStorage(LocalStorageKeys.SESSION_TOKEN) || "";
     }
 
+    get userSessionId(): string {
+        return LocalStorageServiceImpl.pullFromStorage(LocalStorageKeys.USER_SESSION_ID) || "";
+    }
+
     async createSession(mapId: string): Promise<string> {
         return sendApiRequest("/sessions/create", "post", { mapId });
     }
 
     async connectToSession(token: string): Promise<SessionDTO> {
         LocalStorageServiceImpl.pushToStorage(LocalStorageKeys.SESSION_TOKEN, token);
-        return sendApiRequest("/sessions/connect", "post", { token });
+        const dto: SessionDTO = await sendApiRequest("/sessions/connect", "post", { token });
+        LocalStorageServiceImpl.pushToStorage(LocalStorageKeys.USER_SESSION_ID, dto?.userSessionId);
+        return dto;
     }
 
     setSessionMap(map: MapDTO): void {

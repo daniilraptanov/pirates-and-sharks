@@ -149,6 +149,7 @@ export class Pirate extends Phaser.GameObjects.Sprite {
 
     init(x: number, y: number) {
         (async () => {
+            // TODO :: need fixing bug: after page reloading, position just reset.
             const currentPosition = (await squareServiceFactory().getAvailableSquares())
                 .find((square) => square.isCurrentPosition);
 
