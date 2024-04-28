@@ -66,38 +66,38 @@ export class Map {
         const sy = y1 < y2 ? 1 : -1;
         let err = dx - dy;
     
-        while (x1 !== x2 || y1 !== y2) {
-            const mapSquare = Map.getMapSquare(x1, y1);
-            Map.addMapEvent(mapSquare, x1 , y1);
-            if (mapSquare?.isObstacle) {
-                return false; // There's an obstacle, no line of sight
-            }
-    
-            const e2 = 2 * err;
-            if (e2 > -dy) {
-                err -= dy;
-                x1 += sx;
-            }
-            if (e2 < dx) {
-                err += dx;
-                y1 += sy;
-            }
-        }
+        (async () => {
+            for (; x1 !== x2 || y1 !== y2;) {
+                const mapSquare = Map.getMapSquare(x1, y1);
+                await Map.addMapEvent(mapSquare, x1, y1);
+                if (mapSquare?.isObstacle) {
+                    return false; // There's an obstacle, no line of sight
+                }
+            
+                const e2 = 2 * err;
+                if (e2 > -dy) {
+                    err -= dy;
+                    x1 += sx;
+                }
+                if (e2 < dx) {
+                    err += dx;
+                    y1 += sy;
+                }
+            }    
+        })();    
     
         return true; // No obstacles found, line of sight is clear
     }
 
-    static addMapEvent(square: MapSquare, x: number, y: number) {
+    static async addMapEvent(square: MapSquare, x: number, y: number) {
         if (!square) {
             return;
         }
         
-        (async () => {
-            const result = await Map.squareService.saveSquare(square.x, square.y, x === square.x && y === square.y);
-            if (result.square.event) {
-                square.activateMapEvent(result.square.event);
-            }
-        })();
+        const result = await Map.squareService.saveSquare(square.x, square.y, x === square.x && y === square.y);
+        if (result.square.event) {
+            square.activateMapEvent(result.square.event);
+        }
     }
 }
 
