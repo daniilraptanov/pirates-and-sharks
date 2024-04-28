@@ -19,6 +19,10 @@ export class SquareCoordMapper {
 
 export function availableSquaresMap(data: AvailableSquareDTO | AvailableSquareDTO[]) {
     const coordsMap = (square: AvailableSquareDTO) => {
+        if (!square) {
+            return;
+        }
+
         const coords = SquareCoordMapper.toStandard(square.square.x, square.square.y);
         square.square.x = coords.x;
         square.square.y = coords.y;

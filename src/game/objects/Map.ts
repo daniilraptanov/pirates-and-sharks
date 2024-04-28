@@ -88,6 +88,10 @@ export class Map {
     }
 
     static addMapEvent(square: MapSquare, x: number, y: number) {
+        if (!square) {
+            return;
+        }
+        
         (async () => {
             const result = await Map.squareService.saveSquare(square.x, square.y, x === square.x && y === square.y);
             if (result.square.event) {

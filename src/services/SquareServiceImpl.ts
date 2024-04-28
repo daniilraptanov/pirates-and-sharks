@@ -28,7 +28,7 @@ class SquareServiceImpl implements SquareService {
     }
 
     async getAvailableSquares(): Promise<AvailableSquareDTO[]> {
-        this.availableSquares = availableSquaresMap(await sendApiRequest("/sessions/squares", "get")) as AvailableSquareDTO[];
+        this.availableSquares.concat(availableSquaresMap(await sendApiRequest("/sessions/squares", "get")) as AvailableSquareDTO[]);
         return this.availableSquares;
     }
 
