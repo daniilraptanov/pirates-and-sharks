@@ -1,6 +1,7 @@
 import { SquareCoordMapper } from "../../mappers/SquareCoordMapper";
 import sessionServiceFactory from "../../services/SessionServiceImpl";
 import squareServiceFactory from "../../services/SquareServiceImpl";
+import { UserPositionMessageDTO } from "../../types/dto/messages/UserPositionMessageDTO";
 import { MapSquare } from "./MapSquare";
 import { Pirate } from "./Pirate";
 import { Player } from "./Player";
@@ -22,6 +23,15 @@ export class Map {
 
     static findPlayerByStandardCoords(x: number, y: number) {
         return this.players.find(player => player.x === x && player.y === y);
+    }
+
+    static updatePlayersPositions(data: UserPositionMessageDTO) {
+        if (this.sessionService.isCurrentUserSessionId(data.userSessionId)) {
+            return;
+        }
+        const coords = SquareCoordMapper.toStandard(data.x, data.y);
+        const player = this.players.find(player => player.checkUserSessionId(data.userSessionId));
+        player?.setPosition(coords.x, coords.y);
     }
 
     static createMap(scene: Phaser.Scene) {
@@ -46,7 +56,7 @@ export class Map {
 
                 const squares = await this.squareService.getUsersPositions();
                 squares.forEach((square) => {
-                    if (this.sessionService.userSessionId === square.userSessionId) {
+                    if (this.sessionService.isCurrentUserSessionId(square.userSessionId)) {
                         return;
                     }
                     const coords = SquareCoordMapper.toStandard(square.square.x, square.square.y);

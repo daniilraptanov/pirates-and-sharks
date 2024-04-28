@@ -22,8 +22,8 @@ class SessionServiceImpl implements SessionService {
         return LocalStorageServiceImpl.pullFromStorage(LocalStorageKeys.SESSION_TOKEN) || "";
     }
 
-    get userSessionId(): string {
-        return LocalStorageServiceImpl.pullFromStorage(LocalStorageKeys.USER_SESSION_ID) || "";
+    isCurrentUserSessionId(id: string): boolean {
+        return LocalStorageServiceImpl.pullFromStorage(LocalStorageKeys.USER_SESSION_ID) === id;
     }
 
     async createSession(mapId: string): Promise<string> {

@@ -4,6 +4,8 @@ import mapServiceFactory from "../services/MapServiceImpl";
 import { observer } from "mobx-react";
 import { SERVER_URL } from "../tools/send-api-request";
 import { MapDTO } from "../types/dto/MapDTO";
+import { MessageServiceImpl } from "../services/MessageServiceImpl";
+import { Map } from "../game/objects/Map";
 
 interface SessionConnectProps {
     setIsConnectedToSession: (value: boolean) => void;
@@ -28,6 +30,7 @@ const SessionConnect: FC<SessionConnectProps> = observer((props) => {
         const session = await sessionService.connectToSession(sessionToken);
         props.setIsConnectedToSession(!!session);
         sessionService.setSessionMap(mapService.findMapById(session.mapId) as MapDTO);
+        MessageServiceImpl.initialize((data) => Map.updatePlayersPositions(data));
     }
 
     const createSession = async () => {
